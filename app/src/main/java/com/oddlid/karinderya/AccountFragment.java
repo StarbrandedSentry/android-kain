@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,11 +15,8 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 
 /**
@@ -55,40 +51,12 @@ public class AccountFragment extends Fragment {
         fbUser = fbAuth.getCurrentUser();
         fbDatabase = FirebaseDatabase.getInstance();
 
+        //setting up
         final TextView nameText = (TextView) view.findViewById(R.id.nameText);
         final TextView emailText = (TextView) view.findViewById(R.id.emailText);
         final TextView leveluserText = (TextView) view.findViewById(R.id.userlevelText);
+        setDetails(nameText, emailText, leveluserText);
 
-        //Settings names and stuffs
-        uid = fbAuth.getUid();
-        dbRef = fbDatabase.getInstance().getReference().child("Users").child(uid);
-        dbRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                //setting names
-                nameText.setText("NAME: " + user.getName());
-
-                emailText.setText("EMAIL: " + fbUser.getEmail());
-                if(user.getUser_level() == 1)
-                {
-                    leveluserText.setText("USER TYPE: Normal");
-                }
-                else if(user.getUser_level() == 2)
-                {
-                    leveluserText.setText("USER TYPE: Owner");
-                }
-                else if(user.getUser_level() == 3)
-                {
-                    leveluserText.setText("USER TYPE: Admin");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                snackbarMessage(view, databaseError.getMessage());
-            }
-        });
 
         //logout button logic
         logoutBtn = (Button) view.findViewById(R.id.logoutBtn);
@@ -120,6 +88,15 @@ public class AccountFragment extends Fragment {
         Snackbar snack = Snackbar.make(v, message, Snackbar.LENGTH_LONG);
         snack.show();
     }
+
+    //Set texts
+    private void setDetails(TextView name, TextView email, TextView userType)
+    {
+        name.setText(getArguments().getString("name"));
+        email.setText(getArguments().getString("email"));
+        userType.setText(getArguments().getString("userType"));
+    }
+
 
     private DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
         @Override
