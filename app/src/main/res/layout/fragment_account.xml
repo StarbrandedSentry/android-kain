@@ -98,6 +98,7 @@
             android:layout_height="@dimen/buttonHeight"
             android:layout_marginTop="8dp"
             android:background="@drawable/transparent_btn"
+            android:onClick="openAdminActivity"
             android:text="Admin stuffs"
             android:textSize="@dimen/smallFont"
             android:visibility="gone"
@@ -116,7 +117,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
-            android:layout_marginBottom="70dp"
+            android:layout_marginBottom="200dp"
             android:background="@drawable/round_btn"
             android:padding="0dp"
             android:text="upload"
@@ -124,25 +125,31 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.49"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/changeImage"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/profileView"
+            app:layout_constraintVertical_bias="0.015" />
 
-        <ImageButton
-            android:id="@+id/changeImage"
+        <ImageView
+            android:id="@+id/profileView"
             android:layout_width="110dp"
             android:layout_height="110dp"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginEnd="8dp"
             android:src="@mipmap/default_picture"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/changeImageBtn"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/addcamera_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/profileView"
+            app:layout_constraintEnd_toEndOf="@+id/profileView" />
+
     </android.support.constraint.ConstraintLayout>
 
 </FrameLayout>

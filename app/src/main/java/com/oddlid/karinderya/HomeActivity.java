@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -20,6 +21,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class HomeActivity extends AppCompatActivity {
     //Other initializations
@@ -34,7 +37,9 @@ public class HomeActivity extends AppCompatActivity {
     FirebaseAuth fbAuth;
     FirebaseUser fbUser;
     DatabaseReference dbRef;
+    StorageReference storeRef;
     FirebaseDatabase fbDatabase;
+    FirebaseStorage fbStorage;
 
 
     public BottomNavigationView mainNav;
@@ -117,6 +122,9 @@ public class HomeActivity extends AppCompatActivity {
         //Settings names and stuffs
         uid = fbAuth.getUid();
         dbRef = fbDatabase.getInstance().getReference().child("Users").child(uid);
+        storeRef = FirebaseStorage.getInstance().getReference().child("Users").child(uid).child("profile_picture");
+        final long ONE_MEGABYTE = 1024 * 1024;
+
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -137,8 +145,14 @@ public class HomeActivity extends AppCompatActivity {
                     accountBundle.putString("userType", "USER TYPE: Admin");
                 }
                 accountBundle.putInt("userLevel", user.getUser_level());
-            }
 
+                storeRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                    @Override
+                    public void onSuccess(byte[] bytes) {
+                        accountBundle.putByteArray("profile_picture", bytes);
+                    }
+                });
+            }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 snackbarMessage(v, databaseError.getMessage());
