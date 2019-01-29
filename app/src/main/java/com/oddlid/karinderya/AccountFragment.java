@@ -29,7 +29,7 @@ public class AccountFragment extends Fragment {
     //initializations
     Button logoutBtn;
     Button registerBtn;
-
+    Button openAdmin;
 
     //firebase initializations
     FirebaseAuth fbAuth;
@@ -51,12 +51,21 @@ public class AccountFragment extends Fragment {
         fbUser = fbAuth.getCurrentUser();
         fbDatabase = FirebaseDatabase.getInstance();
 
+        openAdmin = (Button) view.findViewById(R.id.openAdmin);
+
         //setting up
         final TextView nameText = (TextView) view.findViewById(R.id.nameText);
         final TextView emailText = (TextView) view.findViewById(R.id.emailText);
         final TextView leveluserText = (TextView) view.findViewById(R.id.userlevelText);
         setDetails(nameText, emailText, leveluserText);
-
+        switch(getArguments().getInt("userLevel"))
+        {
+            case 3:
+                openAdmin.setVisibility(View.VISIBLE);
+                break;
+            default:
+                    break;
+        }
 
         //logout button logic
         logoutBtn = (Button) view.findViewById(R.id.logoutBtn);

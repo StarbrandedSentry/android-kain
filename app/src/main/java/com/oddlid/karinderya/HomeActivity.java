@@ -136,6 +136,7 @@ public class HomeActivity extends AppCompatActivity {
                 {
                     accountBundle.putString("userType", "USER TYPE: Admin");
                 }
+                accountBundle.putInt("userLevel", user.getUser_level());
             }
 
             @Override
