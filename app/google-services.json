@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "251719633829",
+    "firebase_url": "https://onlinekarinderya-3978f.firebaseio.com",
+    "project_id": "onlinekarinderya-3978f",
+    "storage_bucket": "onlinekarinderya-3978f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:251719633829:android:47ae7a1bd37ceccf",
+        "android_client_info": {
+          "package_name": "com.oddlid.karinderya"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "251719633829-1ft6q8d8uqvkmt8dp9voiumvna4m9fhf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.oddlid.karinderya",
+            "certificate_hash": "7610d85e1a290a298a77d19db16b647b7fb15f02"
+          }
+        },
+        {
+          "client_id": "251719633829-fcskk34dj9fjne1e26hvq8raglkns3ko.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASp-oJXZxu74KmdWH7MelbJ_YIctSKv1w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "251719633829-fcskk34dj9fjne1e26hvq8raglkns3ko.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

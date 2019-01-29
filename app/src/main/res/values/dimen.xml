@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="textWidth">320dp</dimen>
+    <dimen name="textHeight">48dp</dimen>
+    <dimen name="buttonWidth">240dp</dimen>
+    <dimen name="buttonHeight">48dp</dimen>
+    <dimen name="infiniteWidth">0dp</dimen>
+    <dimen name="defStartPadding">24dp</dimen>
+    <dimen name="materialPadding">4dp</dimen>
+
+    <dimen name="defFont">18dp</dimen>
+    <dimen name="smallFont">14dp</dimen>
+</resources>
