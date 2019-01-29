@@ -19,9 +19,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class SignupActivity extends AppCompatActivity {
     Button signupBtn;
     EditText editEmail;
@@ -71,23 +68,28 @@ public class SignupActivity extends AppCompatActivity {
                                                     DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference().child("Users").child(userID);
                                                     StorageReference storageUser = FirebaseStorage.getInstance().getReference().child("Users").child(userID).child("profile_picture");
 
-                                                    
-                                                    //creating a HashMap
-                                                    Map newPost = new HashMap();
-                                                    newPost.put("user_level", 1);
-                                                    newPost.put("name", editName.getText().toString());
+                                                    //saving to database I MEAN FIREBASE NIGGA!
+                                                    User user = new User(editName.getText().toString(), 1);
+                                                    currentUser.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if(task.isSuccessful())
+                                                            {
+                                                                //clear fields
+                                                                editEmail.setText("");
+                                                                editPassword.setText("");
+                                                                editConfirmPassword.setText("");
+                                                                editName.setText("");
+                                                                //registration complete
+                                                                snackbarMessage(v,"Mission accomplished! Please check email for verification");
+                                                            }
+                                                            else
+                                                            {
+                                                                snackbarMessage(v, task.getException().getMessage().toString());
+                                                            }
+                                                        }
+                                                    });
 
-                                                    //saving to database
-                                                    currentUser.setValue(newPost);
-
-                                                    //clear fields
-                                                    editEmail.setText("");
-                                                    editPassword.setText("");
-                                                    editConfirmPassword.setText("");
-                                                    editName.setText("");
-
-                                                    //registration complete
-                                                    snackbarMessage(v,"Mission accomplished! Please check email for verification");
                                                 }
                                                 else
                                                 {
