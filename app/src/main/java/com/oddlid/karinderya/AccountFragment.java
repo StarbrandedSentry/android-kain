@@ -5,16 +5,19 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,13 +45,12 @@ import static android.app.Activity.RESULT_OK;
  */
 public class AccountFragment extends Fragment {
     //pls allow sending data
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
+    private static final int REQUEST_EXTERNAL_STORAGE = 1333;
+    public static final int REQUEST_CODE=1531;
+
     //Other initializations
     String name, email, uid;
+    final long ONE_MEGABYTE = 1024 * 1024;
 
     //initializations
     Button logoutBtn;
@@ -64,7 +66,7 @@ public class AccountFragment extends Fragment {
     StorageReference storeRef;
     FirebaseDatabase fbDatabase;
 
-    public static final int REQUEST_CODE=1531;
+
 
     public AccountFragment() {
         // Required empty public constructor
@@ -78,18 +80,25 @@ public class AccountFragment extends Fragment {
         fbUser = fbAuth.getCurrentUser();
         fbDatabase = FirebaseDatabase.getInstance();
         final String uid = fbAuth.getCurrentUser().getUid();
-
+        String userID = fbAuth.getCurrentUser().getUid();
+        storeRef = FirebaseStorage.getInstance().getReference().child("Users").child(userID).child("profile_picture");
+        profileView = (ImageView) view.findViewById(R.id.profileView);
+        storeRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                if(bytes != null)
+                {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    profileView.setImageBitmap(bitmap);
+                }
+            }
+        });
         //getting pictures
         changeImageBtn = (Button) view.findViewById(R.id.changeImageBtn);
-        profileView = (ImageView) view.findViewById(R.id.profileView);
         changeImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                Intent i = new Intent(
-                        Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-                startActivityForResult(i, REQUEST_CODE);
+                handlePermission();
             }
         });
         //end of that hell
@@ -108,7 +117,7 @@ public class AccountFragment extends Fragment {
         final TextView emailText = (TextView) view.findViewById(R.id.emailText);
         final TextView leveluserText = (TextView) view.findViewById(R.id.userlevelText);
         profileView = (ImageView) view.findViewById(R.id.profileView);
-        setDetails(nameText, emailText, leveluserText, profileView);
+        setDetails(nameText, emailText, leveluserText);
         switch(getArguments().getInt("userLevel"))
         {
             case 3:
@@ -180,16 +189,11 @@ public class AccountFragment extends Fragment {
     }
 
     //Set texts
-    private void setDetails(TextView name, TextView email, TextView userType, ImageView profileView)
+    private void setDetails(TextView name, TextView email, TextView userType)
     {
         name.setText(getArguments().getString("name"));
         email.setText(getArguments().getString("email"));
         userType.setText(getArguments().getString("userType"));
-        if(getArguments().getByteArray("profile_picture") != null)
-        {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(getArguments().getByteArray("profile_picture"), 0, getArguments().getByteArray("profile_picture").length);
-            profileView.setImageBitmap(bitmap);
-        }
     }
 
 
@@ -217,14 +221,76 @@ public class AccountFragment extends Fragment {
         }
     };
 
-    //opening gallery
+    //GETTING IMAGE FROM GALLERY
+    private void handlePermission()
+    {
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+        {
+            openImageChooser();
+        }
+        else
+        {
+            if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE);
+            }
+            else
+            {
+                openImageChooser();
+            }
+        }
+    }
+    public void onRequestPermissionResult(int requestCode, String permissions[], int[] grantResults)
+    {
+        switch(requestCode)
+        {
+            case REQUEST_EXTERNAL_STORAGE:{
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
+                    openImageChooser();
+                }
+                else
+                {
+                    snackbarMessage(getView(), "Permission not granted. Good luck!");
+                }
+                return;
+            }
+        }
+    }
+    private void openImageChooser()
+    {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select new profile pictuer"), REQUEST_CODE);
+    }
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(final int requestCode, final int resultCode, @Nullable final Intent data) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                /*getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                    }
+                });*/
+                if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && null != data) {
+                    final Uri selectedImage = data.getData();
+                    profileView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            profileView.setImageURI(selectedImage);
+                            uploadBtn = (Button) getActivity().findViewById(R.id.uploadBtn);
+                            uploadBtn.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
+            }
+        }).start();
+
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && null != data) {
-            Uri selectedImage = data.getData();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+           /*String[] filePathColumn = { MediaStore.Images.Media.DATA };
 
             Cursor cursor = getActivity().getContentResolver().query(selectedImage,
                     filePathColumn, null, null, null);
@@ -236,8 +302,9 @@ public class AccountFragment extends Fragment {
 
             profileView = (ImageView) getActivity().findViewById(R.id.profileView);
             profileView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-            uploadBtn = (Button) getActivity().findViewById(R.id.uploadBtn);
-            uploadBtn.setVisibility(View.VISIBLE);
-        }
+            */
+
     }
+    //END
 }
+

@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -123,7 +122,6 @@ public class HomeActivity extends AppCompatActivity {
         uid = fbAuth.getUid();
         dbRef = fbDatabase.getInstance().getReference().child("Users").child(uid);
         storeRef = FirebaseStorage.getInstance().getReference().child("Users").child(uid).child("profile_picture");
-        final long ONE_MEGABYTE = 1024 * 1024;
 
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -146,12 +144,6 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 accountBundle.putInt("userLevel", user.getUser_level());
 
-                storeRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                    @Override
-                    public void onSuccess(byte[] bytes) {
-                        accountBundle.putByteArray("profile_picture", bytes);
-                    }
-                });
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
