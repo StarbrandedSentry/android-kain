@@ -41,7 +41,7 @@ public class SignupActivity extends AppCompatActivity {
         editEmail = (EditText) findViewById(R.id.editEmail);
         editPassword = (EditText) findViewById(R.id.editPassword);
         editConfirmPassword = (EditText) findViewById(R.id.editConfirmPassword);
-        editName = (EditText) findViewById(R.id.editName);
+        editName = (EditText) findViewById(R.id.editStoreName);
         fbAuth = FirebaseAuth.getInstance();
 
         //sign up event

@@ -150,7 +150,7 @@ public class AccountFragment extends Fragment {
         });
 
         //uploading picture
-        uploadBtn = (Button) view.findViewById(R.id.uploadBtn);
+        uploadBtn = (Button) view.findViewById(R.id.registerBtn);
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -224,7 +224,7 @@ public class AccountFragment extends Fragment {
     //GETTING IMAGE FROM GALLERY
     private void handlePermission()
     {
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
         {
             openImageChooser();
         }
@@ -275,7 +275,7 @@ public class AccountFragment extends Fragment {
                         @Override
                         public void run() {
                             profileView.setImageURI(selectedImage);
-                            uploadBtn = (Button) getActivity().findViewById(R.id.uploadBtn);
+                            uploadBtn = (Button) getActivity().findViewById(R.id.registerBtn);
                             uploadBtn.setVisibility(View.VISIBLE);
                         }
                     });

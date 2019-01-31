@@ -6,8 +6,10 @@ import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -15,29 +17,50 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 public class RegisterActivity extends AppCompatActivity {
     //other initializations
     private final int REQUEST_CODE = 1553, REQUEST_EXTERNAL_STORAGE = 1;
-
-    Button selectImageBtn, removeImageBtn;
+    private int imageCount;
+    private String id;
+    private Date currentDate;
+    private List<byte[]> pulledImages;
+    private boolean success;
+    Button selectImageBtn, removeImageBtn, registerBtn;
     LinearLayout gallery;
+    EditText editName, editLocation;
 
     //firebase initializations
     FirebaseAuth fbAuth;
     FirebaseDatabase fbDatabase;
     FirebaseStorage fbStorage;
-    DatabaseReference dbRef;
+    DatabaseReference storeDB, requestDB;
     StorageReference storeRef;
 
     @Override
@@ -45,8 +68,10 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         fbAuth = FirebaseAuth.getInstance();
+        pulledImages  = new ArrayList<>();
 
         selectImageBtn = (Button) findViewById(R.id.selectImageBtn);
+
     }
 
 
@@ -74,21 +99,23 @@ public class RegisterActivity extends AppCompatActivity {
     };
 
     //random ID generator
-    public static String random() {
-        Random generator = new Random();
-        StringBuilder randomStringBuilder = new StringBuilder();
-        char tempChar;
-        for (int i = 0; i < 6; i++){
-            tempChar = (char) (generator.nextInt(96) + 32);
-            randomStringBuilder.append(tempChar);
+    protected String random() {
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() < 6) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
         }
-        return randomStringBuilder.toString();
+        String saltStr = salt.toString();
+        return saltStr;
+
     }
 
     //GETTING IMAGE FROM GALLERY
     private void handlePermission()
     {
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
             openImageChooser();
         }
@@ -130,10 +157,11 @@ public class RegisterActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "Select images"), REQUEST_CODE);
     }
     @Override
-    public void onActivityResult(final int requestCode, final int resultCode, @Nullable final Intent data) {
+    public void onActivityResult(final int requestCode, final int resultCode, @Nullable final Intent data){
         super.onActivityResult(requestCode, resultCode, data);
+        ClipData clipData = data.getClipData();
         if (null != data) {
-            ClipData clipData = data.getClipData();
+            imageCount = clipData.getItemCount();
             gallery = (LinearLayout) findViewById(R.id.gallery);
 
             for(int i = 0; i < clipData.getItemCount(); i++)
@@ -141,11 +169,29 @@ public class RegisterActivity extends AppCompatActivity {
                 ImageView storeImage = new ImageView(this);
                 //storeImage.setMaxWidth((int) getResources().getDimension(R.dimen.squareImage));
                 //storeImage.setMaxHeight((int) getResources().getDimension(R.dimen.squareImage));
-                storeImage.setBackground(getDrawable(R.drawable.round_border_btn));
+                if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN)
+                {
+                    storeImage.setBackground(getDrawable(R.drawable.round_border_btn));
+                }
                 storeImage.setPadding(25, 25, 25, 25);
                 storeImage.setAdjustViewBounds(true);
                 storeImage.setImageURI(clipData.getItemAt(i).getUri());
 
+                //save bytes
+                //pulledImages.add(getBytes(clipData.getItemAt(i).getUri()));
+
+                try
+                {
+                    InputStream iStream =   getContentResolver().openInputStream(clipData.getItemAt(i).getUri());
+                    pulledImages.add(getBytes(iStream));
+                }catch (FileNotFoundException ex)
+                {
+                    snackbarMessage(findViewById(android.R.id.content), ex.getMessage());
+                }
+                catch (IOException ex)
+                {
+                    snackbarMessage(findViewById(android.R.id.content), ex.getMessage());
+                }
                 gallery.addView(storeImage);
             }
             removeImageBtn = (Button) findViewById(R.id.removeImageBtn);
@@ -171,9 +217,88 @@ public class RegisterActivity extends AppCompatActivity {
     {
         gallery = (LinearLayout) findViewById(R.id.gallery);
         gallery.removeAllViews();
+        pulledImages.clear();
 
         removeImageBtn = (Button) findViewById(R.id.removeImageBtn);
         removeImageBtn.setVisibility(View.GONE);
+    }
+
+    //register button logic
+    public void registerBtn(final View view)
+    {
+        registerBtn = (Button) findViewById(R.id.registerBtn);
+        registerBtn.setEnabled(false);
+        String uid = FirebaseAuth.getInstance().getUid();
+        id = random();
+        storeDB = FirebaseDatabase.getInstance().getReference().child("Stores").child(id);
+        requestDB = FirebaseDatabase.getInstance().getReference().child("Requests").child(id);
+
+        //save request
+        editName = (EditText) findViewById(R.id.editStoreName);
+        editLocation = (EditText) findViewById(R.id.editLocation);
+        Request request = new Request(editName.getText().toString(), uid, editLocation.getText().toString(), getCurrentDate());
+
+        requestDB.setValue(request).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                UploadTask uploadTask;
+                for(int i = 0; i < imageCount; i++)
+                {
+                    storeRef = FirebaseStorage.getInstance().getReference().child("Stores").child(id).child("entry_images").child(""+i);
+                    uploadTask = storeRef.putBytes(pulledImages.get(i));
+                    uploadTask.addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            success = false;
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            success = true;
+                        }
+                    });
+                }
+                if(success)
+                {
+                    snackbarMessage(view, "Success! Now wait until an admin confirms your request!");
+                    editName = (EditText) findViewById(R.id.editStoreName);
+                    editLocation = (EditText) findViewById(R.id.editLocation);
+                    editName.setText("");
+                    editLocation.setText("");
+                    gallery = (LinearLayout) findViewById(R.id.gallery);
+                    gallery.removeAllViews();
+                    pulledImages.clear();
+                }
+                else
+                {
+                    snackbarMessage(view, "Oh no! something went wrong! Try again!");
+                }
+            }
+        });
+        registerBtn.setEnabled(true);
+    }
+
+    //bytes factory
+    public byte[] getBytes(InputStream inputStream) throws  IOException{
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
+    }
+
+    //get current date
+    private String getCurrentDate()
+    {
+        currentDate = Calendar.getInstance().getTime();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
+        String date = sdf.format(currentDate);
+        return date;
     }
 
 }

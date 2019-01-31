@@ -1,23 +1,14 @@
 package com.oddlid.karinderya;
 
 public class Store {
-    public Store(String id, String uid, String name, String location)
+    public Store(String uid, String name, String location)
     {
-        this.id = id;
         this.uid = uid;
         this.name = name;
         this.location = location;
     }
 
-    private String id, uid, name, location;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
+    private String uid, name, location;
 
     public String getUid() {
         return uid;

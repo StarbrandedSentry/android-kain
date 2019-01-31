@@ -7,7 +7,7 @@
     tools:context=".RegisterActivity">
 
     <EditText
-        android:id="@+id/editName"
+        android:id="@+id/editStoreName"
         android:layout_width="@dimen/textWidth"
         android:layout_height="@dimen/textHeight"
         android:layout_marginStart="24dp"
@@ -24,7 +24,7 @@
         app:layout_constraintVertical_bias="0.129" />
 
     <EditText
-        android:id="@+id/editName2"
+        android:id="@+id/editLocation"
         android:layout_width="@dimen/textWidth"
         android:layout_height="@dimen/textHeight"
         android:layout_marginStart="8dp"
@@ -37,7 +37,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editName"
+        app:layout_constraintTop_toBottomOf="@+id/editStoreName"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
@@ -45,9 +45,8 @@
         style="@style/Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:text="Register your Karinderya"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -64,12 +63,12 @@
         android:layout_height="@dimen/textHeight"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
-        android:text="Add pictures to show your karinderya"
+        android:text="Show pictures of your karinderya (at least 2)"
         android:textSize="@dimen/defFont"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editName2"
+        app:layout_constraintTop_toBottomOf="@+id/editLocation"
         app:layout_constraintVertical_bias="0.0" />
 
     <Button
@@ -88,6 +87,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
         app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/registerBtn"
+        style="@style/FilledFlat"
+        android:layout_width="@dimen/buttonWidth"
+        android:layout_height="@dimen/buttonHeight"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/round_btn"
+        android:onClick="registerBtn"
+        android:text="register"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.445"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selectImageBtn"
+        app:layout_constraintVertical_bias="0.503" />
 
     <Button
         android:id="@+id/removeImageBtn"
