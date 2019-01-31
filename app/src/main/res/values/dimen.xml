@@ -7,7 +7,10 @@
     <dimen name="infiniteWidth">0dp</dimen>
     <dimen name="defStartPadding">24dp</dimen>
     <dimen name="materialPadding">4dp</dimen>
+    <dimen name="galleryHeight">150dp</dimen>
+    <dimen name="squareImage">110dp</dimen>
 
     <dimen name="defFont">18dp</dimen>
     <dimen name="smallFont">14dp</dimen>
+    <dimen name="largeFont">30dp</dimen>
 </resources>

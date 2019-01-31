@@ -269,11 +269,6 @@ public class AccountFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                /*getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                    }
-                });*/
                 if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && null != data) {
                     final Uri selectedImage = data.getData();
                     profileView.post(new Runnable() {
@@ -289,21 +284,6 @@ public class AccountFragment extends Fragment {
         }).start();
 
         super.onActivityResult(requestCode, resultCode, data);
-
-           /*String[] filePathColumn = { MediaStore.Images.Media.DATA };
-
-            Cursor cursor = getActivity().getContentResolver().query(selectedImage,
-                    filePathColumn, null, null, null);
-            cursor.moveToFirst();
-
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-
-            profileView = (ImageView) getActivity().findViewById(R.id.profileView);
-            profileView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-            */
-
     }
     //END
 }

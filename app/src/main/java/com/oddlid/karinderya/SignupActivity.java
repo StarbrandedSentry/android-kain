@@ -117,7 +117,7 @@ public class SignupActivity extends AppCompatActivity {
         linkLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                finish();
             }
         });
     }
