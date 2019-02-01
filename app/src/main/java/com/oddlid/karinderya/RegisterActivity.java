@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -27,8 +28,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -48,10 +53,10 @@ public class RegisterActivity extends AppCompatActivity {
     //other initializations
     private final int REQUEST_CODE = 1553, REQUEST_EXTERNAL_STORAGE = 1;
     private int imageCount;
-    private String id;
+    String id;
     private Date currentDate;
     private List<byte[]> pulledImages;
-    private boolean success;
+    private boolean success, flag;
     Button selectImageBtn, removeImageBtn, registerBtn;
     LinearLayout gallery;
     EditText editName, editLocation;
@@ -68,6 +73,8 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         fbAuth = FirebaseAuth.getInstance();
+        id = "";
+        success = true;
         pulledImages  = new ArrayList<>();
 
         selectImageBtn = (Button) findViewById(R.id.selectImageBtn);
@@ -100,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     //random ID generator
     protected String random() {
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890qwerty";
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();
         while (salt.length() < 6) { // length of the random string.
@@ -228,53 +235,69 @@ public class RegisterActivity extends AppCompatActivity {
     {
         registerBtn = (Button) findViewById(R.id.registerBtn);
         registerBtn.setEnabled(false);
-        String uid = FirebaseAuth.getInstance().getUid();
-        id = random();
-        storeDB = FirebaseDatabase.getInstance().getReference().child("Stores").child(id);
-        requestDB = FirebaseDatabase.getInstance().getReference().child("Requests").child(id);
-
-        //save request
-        editName = (EditText) findViewById(R.id.editStoreName);
-        editLocation = (EditText) findViewById(R.id.editLocation);
-        Request request = new Request(editName.getText().toString(), uid, editLocation.getText().toString(), getCurrentDate());
-
-        requestDB.setValue(request).addOnCompleteListener(new OnCompleteListener<Void>() {
+        boolean unique = false;
+        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Requests");
+        dbRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                UploadTask uploadTask;
-                for(int i = 0; i < imageCount; i++)
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                while(!flag)
                 {
-                    storeRef = FirebaseStorage.getInstance().getReference().child("Stores").child(id).child("entry_images").child(""+i);
-                    uploadTask = storeRef.putBytes(pulledImages.get(i));
-                    uploadTask.addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            success = false;
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            success = true;
-                        }
-                    });
-                }
-                if(success)
-                {
-                    snackbarMessage(view, "Success! Now wait until an admin confirms your request!");
-                    editName = (EditText) findViewById(R.id.editStoreName);
-                    editLocation = (EditText) findViewById(R.id.editLocation);
-                    editName.setText("");
-                    editLocation.setText("");
-                    gallery = (LinearLayout) findViewById(R.id.gallery);
-                    gallery.removeAllViews();
-                    pulledImages.clear();
-                }
-                else
-                {
-                    snackbarMessage(view, "Oh no! something went wrong! Try again!");
+                    id = random();
+                    if(!dataSnapshot.hasChild(id))
+                    {requestDB = FirebaseDatabase.getInstance().getReference().child("Requests").child(id);
+
+                        //save request
+                        editName = (EditText) findViewById(R.id.editStoreName);
+                        String uid = fbAuth.getUid();
+                        editLocation = (EditText) findViewById(R.id.editLocation);
+                        Request request = new Request(editName.getText().toString(), uid, editLocation.getText().toString(), getCurrentDate());
+
+                        requestDB.setValue(request).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                UploadTask uploadTask;
+                                for(int i = 0; i < imageCount; i++)
+                                {
+                                    storeRef = FirebaseStorage.getInstance().getReference().child("Stores").child(id).child("entry_images").child(""+i);
+                                    uploadTask = storeRef.putBytes(pulledImages.get(i));
+                                    uploadTask.addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            snackbarMessage(view, "Oh no! something went wrong! Try again!");
+                                            return;
+                                        }
+                                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                            success = true;
+                                        }
+                                    });
+                                }
+                                if(success)
+                                {
+                                    snackbarMessage(view, "Success! Now wait until an admin confirms your request!");
+                                    editName = (EditText) findViewById(R.id.editStoreName);
+                                    editLocation = (EditText) findViewById(R.id.editLocation);
+                                    editName.setText("");
+                                    editLocation.setText("");
+                                    gallery = (LinearLayout) findViewById(R.id.gallery);
+                                    gallery.removeAllViews();
+                                    pulledImages.clear();
+                                }
+                            }
+                        });
+                        flag = true;
+                    }
                 }
             }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
         });
+
+
         registerBtn.setEnabled(true);
     }
 
