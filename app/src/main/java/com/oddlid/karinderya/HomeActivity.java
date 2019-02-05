@@ -15,11 +15,8 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -66,8 +63,6 @@ public class HomeActivity extends AppCompatActivity {
         promosFragment = new PromosFragment();
         searchFragment = new SearchFragment();
         accountFragment = new AccountFragment();
-        Bundle accountBundle = getDetails(findViewById(R.id.content));
-        accountFragment.setArguments(accountBundle);
 
         manageFragment = new ManageFragment();
 
@@ -114,45 +109,14 @@ public class HomeActivity extends AppCompatActivity {
         return;
     }
 
-    public Bundle getDetails(final View v)
+    /*public Bundle getDetails(final View v)
     {
         final Bundle accountBundle = new Bundle();
 
-        //Settings names and stuffs
-        uid = fbAuth.getUid();
-        dbRef = fbDatabase.getInstance().getReference().child("Users").child(uid);
-        storeRef = FirebaseStorage.getInstance().getReference().child("Users").child(uid).child("profile_picture");
 
-        dbRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                //setting names
-                accountBundle.putString("name", "NAME: " + user.getName());
-                accountBundle.putString("email", "EMAIL: " + fbUser.getEmail());
-                if(user.getUser_level() == 1)
-                {
-                    accountBundle.putString("userType", "USER TYPE: Normal");
-                }
-                else if(user.getUser_level() == 2)
-                {
-                    accountBundle.putString("userType", "USER TYPE: Owner");
-                }
-                else if(user.getUser_level() == 3)
-                {
-                    accountBundle.putString("userType", "USER TYPE: Admin");
-                }
-                accountBundle.putInt("userLevel", user.getUser_level());
-
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                snackbarMessage(v, databaseError.getMessage());
-            }
-        });
 
         return accountBundle;
-    }
+    }*/
 
     private void snackbarMessage(View v, String message)
     {

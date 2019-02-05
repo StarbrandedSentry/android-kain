@@ -29,8 +29,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -76,11 +79,13 @@ public class AccountFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_account, container, false);
+
         fbAuth = FirebaseAuth.getInstance();
         fbUser = fbAuth.getCurrentUser();
         fbDatabase = FirebaseDatabase.getInstance();
         final String uid = fbAuth.getCurrentUser().getUid();
         String userID = fbAuth.getCurrentUser().getUid();
+
         storeRef = FirebaseStorage.getInstance().getReference().child("Users").child(userID).child("profile_picture");
         profileView = (ImageView) view.findViewById(R.id.profileView);
         storeRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -91,6 +96,7 @@ public class AccountFragment extends Fragment {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     profileView.setImageBitmap(bitmap);
                 }
+                //DESTROY THE PROGRESS BARS
             }
         });
         //getting pictures
@@ -113,19 +119,28 @@ public class AccountFragment extends Fragment {
         });
 
         //setting up
-        final TextView nameText = (TextView) view.findViewById(R.id.nameText);
-        final TextView emailText = (TextView) view.findViewById(R.id.emailText);
-        final TextView leveluserText = (TextView) view.findViewById(R.id.userlevelText);
-        profileView = (ImageView) view.findViewById(R.id.profileView);
-        setDetails(nameText, emailText, leveluserText);
-        switch(getArguments().getInt("userLevel"))
-        {
-            case 3:
-                openAdmin.setVisibility(View.VISIBLE);
-                break;
-            default:
-                    break;
-        }
+        setDetails();
+        dbRef = fbDatabase.getInstance().getReference().child("Users").child(uid);
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                switch(user.getUser_level())
+                {
+                    case 3:
+                        openAdmin = (Button) view.findViewById(R.id.openAdmin);
+                        openAdmin.setVisibility(View.VISIBLE);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                snackbarMessage(getView(), databaseError.getMessage());
+            }
+        });
+
 
         //logout button logic
         logoutBtn = (Button) view.findViewById(R.id.logoutBtn);
@@ -189,11 +204,38 @@ public class AccountFragment extends Fragment {
     }
 
     //Set texts
-    private void setDetails(TextView name, TextView email, TextView userType)
+    private void setDetails()
     {
-        name.setText(getArguments().getString("name"));
-        email.setText(getArguments().getString("email"));
-        userType.setText(getArguments().getString("userType"));
+        //Settings names and stuffs
+        String uid = fbAuth.getUid();
+        dbRef = fbDatabase.getInstance().getReference().child("Users").child(uid);
+        dbRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                TextView nameView = getView().findViewById(R.id.nameText);
+                TextView emailView = getView().findViewById(R.id.emailText);
+                TextView userlevelView = getView().findViewById(R.id.userlevelText);
+                User user = dataSnapshot.getValue(User.class);
+                //setting names
+                nameView.setText("NAME: " + user.getName());
+                emailView.setText("EMAIL: " + fbUser.getEmail());
+                if(user.getUser_level() == 1)
+                {
+                    userlevelView.setText("USER TYPE: Normal");
+                }
+                else if(user.getUser_level() == 2)
+                {
+                    userlevelView.setText("USER TYPE: Owner");
+                }
+                else if(user.getUser_level() == 3) {
+                    userlevelView.setText("USER TYPE: Admin");
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                snackbarMessage(getView(), databaseError.getMessage());
+            }
+        });
     }
 
 

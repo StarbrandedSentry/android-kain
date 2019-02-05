@@ -35,6 +35,7 @@
         android:ems="10"
         android:hint="Email"
         android:inputType="textPersonName"
+        android:textSize="@dimen/defFont"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,6 +52,7 @@
         android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="Name"
+        android:textSize="@dimen/defFont"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -69,6 +71,7 @@
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
+        android:textSize="@dimen/defFont"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -84,6 +87,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
+        android:textSize="@dimen/defFont"
         android:hint="Confirm Password"
         android:inputType="textPassword"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -145,4 +149,5 @@
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
+
 </android.support.constraint.ConstraintLayout>
