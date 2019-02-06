@@ -17,8 +17,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class AdminActivity extends AppCompatActivity {
+public class AdminActivity extends AppCompatActivity implements RequestAdapter.OnNoteListener {
     //init arrays
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter recyclerAdapter;
+    private RecyclerView.LayoutManager layoutManager;
 
     //firebase init
     FirebaseAuth fbAuth;
@@ -47,12 +50,13 @@ public class AdminActivity extends AppCompatActivity {
                     mDateMade.add(data.child("date_made").getValue(String.class));
                     mStoreNames.add(data.child("name").getValue(String.class));
                 }
-                RecyclerView recyclerView = findViewById(R.id.pendingRecycler);
-                RecyclerView.Adapter adapter = new RecyclerViewAdapter(mStoreNames, mDateMade);
-                RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-                recyclerView.setLayoutManager(linearLayoutManager);
+                recyclerView = findViewById(R.id.pendingRecycler);
                 recyclerView.setHasFixedSize(true);
-                recyclerView.setAdapter(adapter);
+                layoutManager = new LinearLayoutManager(getApplicationContext());
+                recyclerAdapter = new RequestAdapter(mStoreNames, mDateMade);
+
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(recyclerAdapter);
             }
 
             @Override
@@ -68,5 +72,11 @@ public class AdminActivity extends AppCompatActivity {
     {
         Snackbar snack = Snackbar.make(v, message, Snackbar.LENGTH_LONG);
         snack.show();
+    }
+
+    //for on click listener
+    @Override
+    public void onNoteListener(int position) {
+
     }
 }

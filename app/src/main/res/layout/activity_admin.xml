@@ -25,6 +25,12 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/pendingRecycler"
         android:layout_width="0dp"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/materialPadding"
+        android:paddingStart="@dimen/materialPadding"
+        android:paddingEnd="@dimen/materialPadding"
+        android:paddingBottom="@dimen/materialPadding"
+        android:background="@drawable/round_btn"
         android:layout_height="240dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
