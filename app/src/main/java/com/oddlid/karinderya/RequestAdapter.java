@@ -13,46 +13,56 @@ import java.util.ArrayList;
 public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestViewHolder> {
     private ArrayList<String> propName;
     private ArrayList<String> propDate;
-    public static class RequestViewHolder extends RecyclerView.ViewHolder
+    private ArrayList<String> propID;
+    private OnNoteListener mOnNoteListener;
+
+    public static class RequestViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
+        public TextView requestIDView;
         public TextView storeNameView;
         public TextView dateMadeView;
         public CardView parentLayout;
-        public RequestViewHolder(@NonNull View itemView) {
+        OnNoteListener onNoteListener;
+        public RequestViewHolder(@NonNull View itemView, OnNoteListener onNoteListener) {
             super(itemView);
 
+            requestIDView = itemView.findViewById(R.id.propID);
             storeNameView = itemView.findViewById(R.id.propStoreName);
             dateMadeView = itemView.findViewById(R.id.propDate);
             parentLayout = itemView.findViewById(R.id.pendingLayoutView);
+            this.onNoteListener = onNoteListener;
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            onNoteListener.onNoteClick(getAdapterPosition());
         }
     }
 
-    public RequestAdapter(ArrayList<String> propName, ArrayList<String> propDate)
+    public RequestAdapter(ArrayList<String> propID, ArrayList<String> propName, ArrayList<String> propDate, OnNoteListener onNoteListener)
     {
         this.propName = propName;
         this.propDate = propDate;
-
+        this.propID = propID;
+        this.mOnNoteListener = onNoteListener;
     }
 
     @NonNull
     @Override
     public RequestViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.pending_layout, viewGroup, false);
-        RequestViewHolder rvh = new RequestViewHolder(v);
+        RequestViewHolder rvh = new RequestViewHolder(v, mOnNoteListener);
         return rvh;
     }
 
     @Override
     public void onBindViewHolder(@NonNull RequestViewHolder requestViewHolder, int i) {
+        requestViewHolder.requestIDView.setText(propID.get(i));
         requestViewHolder.storeNameView.setText(propName.get(i));
         requestViewHolder.dateMadeView.setText(propDate.get(i));
 
-        requestViewHolder.parentLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 
     @Override
@@ -63,7 +73,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
     //interface for onclick
     public interface OnNoteListener
     {
-        void onNoteListener(int position);
+        void onNoteClick(int position);
     }
 }
 

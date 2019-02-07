@@ -13,15 +13,24 @@
         android:layout_height="match_parent"
         android:layout_margin="6dp">
 
+        <TextView
+            android:id="@+id/propID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@dimen/defFont"
+            android:text="Prop ID"
+            android:paddingStart="@dimen/defStartPadding"
+            />
 
         <TextView
             android:id="@+id/propStoreName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/defFont"
-            android:textStyle="bold"
             android:paddingStart="@dimen/defStartPadding"
-            android:text="Proposed Name" />
+            android:text="Proposed Name"
+            android:layout_below="@+id/propID"/>
 
         <TextView
             android:id="@+id/propDate"

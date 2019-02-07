@@ -1,5 +1,6 @@
 package com.oddlid.karinderya;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -45,15 +46,20 @@ public class AdminActivity extends AppCompatActivity implements RequestAdapter.O
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> mStoreNames = new ArrayList<>();
                 ArrayList<String> mDateMade = new ArrayList<>();
+                ArrayList<String> mRequestID = new ArrayList<>();
                 for(DataSnapshot data : dataSnapshot.getChildren())
                 {
                     mDateMade.add(data.child("date_made").getValue(String.class));
                     mStoreNames.add(data.child("name").getValue(String.class));
                 }
+                for(DataSnapshot data : dataSnapshot.getChildren())
+                {
+                    mRequestID.add(data.getKey());
+                }
                 recyclerView = findViewById(R.id.pendingRecycler);
                 recyclerView.setHasFixedSize(true);
                 layoutManager = new LinearLayoutManager(getApplicationContext());
-                recyclerAdapter = new RequestAdapter(mStoreNames, mDateMade);
+                recyclerAdapter = new RequestAdapter(mRequestID, mStoreNames, mDateMade, AdminActivity.this);
 
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(recyclerAdapter);
@@ -74,9 +80,29 @@ public class AdminActivity extends AppCompatActivity implements RequestAdapter.O
         snack.show();
     }
 
-    //for on click listener
     @Override
-    public void onNoteListener(int position) {
+    public void onNoteClick(final int position) {
+        DatabaseReference requestDB = FirebaseDatabase.getInstance().getReference().child("Requests");
+        requestDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<String> mRequestID = new ArrayList<>();
+                for(DataSnapshot data : dataSnapshot.getChildren())
+                {
+                    mRequestID.add(data.getKey());
+                }
 
+                //new intents
+                Intent intent = new Intent(getApplicationContext(), ActRequestActivity.class);
+                intent.putExtra("propID", mRequestID.get(position));
+                startActivity(intent);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
