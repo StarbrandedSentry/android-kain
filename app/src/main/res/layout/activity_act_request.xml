@@ -11,10 +11,11 @@
         android:id="@+id/propIDView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+
         android:text="ID"
         android:textColor="@android:color/black"
         android:textSize="@dimen/largeFont"
@@ -100,17 +101,18 @@
         app:layout_constraintTop_toBottomOf="@+id/propLocationView"
         app:layout_constraintVertical_bias="0.0" />
 
-    <LinearLayout
-        android:id="@+id/requestImages"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/requestImageRecycler"
+        android:layout_width="0dp"
+        android:layout_height="270dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
-        android:orientation="horizontal"
+        android:background="@drawable/round_border_btn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/propDateView"
-        app:layout_constraintVertical_bias="0.0"></LinearLayout>
+        app:layout_constraintVertical_bias="0.0" />
 
 </android.support.constraint.ConstraintLayout>

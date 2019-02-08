@@ -1,6 +1,10 @@
 package com.oddlid.karinderya;
 
 public class Request {
+    public Request()
+    {}
+
+
     public Request(String name, String uid, String location, String date_made)
     {
         this.name = name;

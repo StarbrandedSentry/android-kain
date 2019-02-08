@@ -3,13 +3,13 @@ package com.oddlid.karinderya;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ClipData;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -17,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -27,12 +28,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -47,13 +46,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class RegisterActivity extends AppCompatActivity {
     //other initializations
     private final int REQUEST_CODE = 1553, REQUEST_EXTERNAL_STORAGE = 1;
     private int imageCount;
-    String id;
+    //String id;
     private Date currentDate;
     private List<byte[]> pulledImages;
     private boolean success, flag;
@@ -73,7 +73,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         fbAuth = FirebaseAuth.getInstance();
-        id = "";
+        //id = "";
         success = true;
         pulledImages  = new ArrayList<>();
 
@@ -242,19 +242,19 @@ public class RegisterActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 while(!flag)
                 {
-                    id = random();
+                    final String id = random();
                     if(!dataSnapshot.hasChild(id))
-                    {requestDB = FirebaseDatabase.getInstance().getReference().child("Requests").child(id);
-
+                    {
+                        requestDB = FirebaseDatabase.getInstance().getReference().child("Requests").child(id);
                         //save request
                         editName = (EditText) findViewById(R.id.editStoreName);
-                        String uid = fbAuth.getUid();
+                        final String uid = fbAuth.getUid();
                         editLocation = (EditText) findViewById(R.id.editLocation);
                         Request request = new Request(editName.getText().toString(), uid, editLocation.getText().toString(), getCurrentDate());
 
                         requestDB.setValue(request).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
-                            public void onComplete(@NonNull Task<Void> task) {
+                            public void onComplete(@NonNull final Task<Void> task) {
                                 UploadTask uploadTask;
                                 for(int i = 0; i < imageCount; i++)
                                 {
@@ -270,6 +270,36 @@ public class RegisterActivity extends AppCompatActivity {
                                         @Override
                                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                             success = true;
+
+                                            taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                    String SALTCHARS = "1234567890";
+                                                    StringBuilder salt = new StringBuilder();
+                                                    Random rnd = new Random();
+                                                    while (salt.length() < 3) { // length of the random string.
+                                                        int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+                                                        salt.append(SALTCHARS.charAt(index));
+                                                    }
+                                                    String saltStr = salt.toString();
+                                                    final String downloadUrl = uri.toString();
+
+                                                    //EntryUpload upload = new EntryUpload(downloadUrl);
+                                                    DatabaseReference newRef = FirebaseDatabase.getInstance().getReference()
+                                                            .child("Requests").child(id).child("entry_images").child(saltStr).child("image_url");
+                                                    newRef.setValue(downloadUrl);
+                                                }
+                                            });
+                                        }
+                                    }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                            /*storeRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+
+                                                }
+                                            });*/
                                         }
                                     });
                                 }
@@ -324,4 +354,10 @@ public class RegisterActivity extends AppCompatActivity {
         return date;
     }
 
+    private String getFileExtension(Uri uri)
+    {
+        ContentResolver cr = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cr.getType(uri));
+    }
 }
