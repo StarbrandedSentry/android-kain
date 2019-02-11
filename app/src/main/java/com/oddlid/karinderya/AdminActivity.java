@@ -34,13 +34,20 @@ public class AdminActivity extends AppCompatActivity implements RequestAdapter.O
         setContentView(R.layout.activity_admin);
         fbAuth = FirebaseAuth.getInstance();
 
+        //say something when coming from actrequest
+        Intent open = getIntent();
+        if(open.getStringExtra("message") != null)
+        {
+            String message = open.getStringExtra("message");
+            snackbarMessage(findViewById(android.R.id.content), message);
+        }
 
         initRecyclerView();
     }
 
     private void initRecyclerView()
     {
-        DatabaseReference requestDB = FirebaseDatabase.getInstance().getReference().child("Requests");
+        DatabaseReference requestDB = FirebaseDatabase.getInstance().getReference().child("Stores");
         requestDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -49,13 +56,18 @@ public class AdminActivity extends AppCompatActivity implements RequestAdapter.O
                 ArrayList<String> mRequestID = new ArrayList<>();
                 for(DataSnapshot data : dataSnapshot.getChildren())
                 {
-                    mDateMade.add(data.child("date_made").getValue(String.class));
-                    mStoreNames.add(data.child("name").getValue(String.class));
+                    if(data.child("status").getValue().equals("pending"))
+                    {
+                        mDateMade.add(data.child("date_made").getValue(String.class));
+                        mStoreNames.add(data.child("name").getValue(String.class));
+                        mRequestID.add(data.getKey());
+                    }
                 }
-                for(DataSnapshot data : dataSnapshot.getChildren())
+                /*for(DataSnapshot data : dataSnapshot.getChildren())
                 {
+
                     mRequestID.add(data.getKey());
-                }
+                }*/
                 recyclerView = findViewById(R.id.pendingRecycler);
                 recyclerView.setHasFixedSize(true);
                 layoutManager = new LinearLayoutManager(getApplicationContext());
@@ -82,7 +94,7 @@ public class AdminActivity extends AppCompatActivity implements RequestAdapter.O
 
     @Override
     public void onNoteClick(final int position) {
-        DatabaseReference requestDB = FirebaseDatabase.getInstance().getReference().child("Requests");
+        DatabaseReference requestDB = FirebaseDatabase.getInstance().getReference().child("Stores");
         requestDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -105,4 +117,6 @@ public class AdminActivity extends AppCompatActivity implements RequestAdapter.O
             }
         });
     }
+
+
 }

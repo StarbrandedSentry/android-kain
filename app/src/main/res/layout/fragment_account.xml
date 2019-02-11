@@ -15,60 +15,54 @@
         <TextView
             android:id="@+id/nameText"
             style="@style/TransparentInfo"
-            android:textSize="@dimen/defFont"
-            android:layout_width="@dimen/infiniteWidth"
-            android:layout_height="53dp"
-            android:layout_marginTop="8dp"
-            android:text="NAME:"
-            android:textColor="@color/colorBlack"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/registerBtn"
-            app:layout_constraintVertical_bias="0.058" />
-
-        <TextView
-            android:id="@+id/emailText"
-            style="@style/TransparentInfo"
-            android:layout_width="@dimen/infiniteWidth"
+            android:layout_width="0dp"
             android:layout_height="@dimen/textHeight"
-            android:text="EMAIL:"
+            android:layout_marginTop="8dp"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/defFont"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/f_acc_name_title"
+            app:layout_constraintTop_toBottomOf="@+id/registerBtn"
+            app:layout_constraintVertical_bias="0.049" />
+
+        <TextView
+            android:id="@+id/emailText"
+            style="@style/TransparentInfo"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/textHeight"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/defFont"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/f_acc_name_title2"
             app:layout_constraintTop_toBottomOf="@+id/nameText"
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/userlevelText"
             style="@style/TransparentInfo"
-            android:layout_width="@dimen/infiniteWidth"
+            android:layout_width="0dp"
             android:layout_height="@dimen/textHeight"
-            android:layout_marginTop="8dp"
-            android:text="USER TYPE:"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/defFont"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/f_acc_name_title3"
             app:layout_constraintTop_toBottomOf="@+id/emailText"
             app:layout_constraintVertical_bias="0.0" />
 
         <Button
             android:id="@+id/logoutBtn"
             style="@style/TransparentFlat"
-            android:textSize="@dimen/smallFont"
             android:layout_width="0dp"
             android:layout_height="@dimen/buttonHeight"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="70dp"
             android:background="@drawable/transparent_btn"
             android:text="log out"
+            android:textSize="@dimen/smallFont"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -98,7 +92,6 @@
             android:layout_height="@dimen/buttonHeight"
             android:layout_marginTop="8dp"
             android:background="@drawable/transparent_btn"
-            android:onClick="openAdminActivity"
             android:text="Admin stuffs"
             android:textSize="@dimen/smallFont"
             android:visibility="gone"
@@ -137,10 +130,14 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:src="@mipmap/default_picture"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
         <Button
             android:id="@+id/changeImageBtn"
@@ -149,6 +146,64 @@
             android:background="@drawable/addcamera_icon"
             app:layout_constraintBottom_toBottomOf="@+id/profileView"
             app:layout_constraintEnd_toEndOf="@+id/profileView" />
+
+        <TextView
+            android:id="@+id/f_acc_name_title"
+            style="@style/TitleHolder"
+            android:layout_width="@dimen/textHolderWidth"
+            android:layout_height="@dimen/textHeight"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/text_title"
+            android:gravity="center"
+            android:text="NAME"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/defFont"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/registerBtn"
+            app:layout_constraintVertical_bias="0.050000012" />
+
+        <TextView
+            android:id="@+id/f_acc_name_title2"
+            style="@style/TitleHolder"
+            android:layout_width="@dimen/textHolderWidth"
+            android:layout_height="@dimen/textHeight"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/text_title"
+            android:gravity="center"
+            android:text="EMAIL"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/defFont"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/f_acc_name_title"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/f_acc_name_title3"
+            style="@style/TitleHolder"
+            android:layout_width="@dimen/textHolderWidth"
+            android:layout_height="@dimen/textHeight"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/text_title"
+            android:gravity="center"
+            android:text="USER LEVEL"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/defFont"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/f_acc_name_title2"
+            app:layout_constraintVertical_bias="0.0" />
 
     </android.support.constraint.ConstraintLayout>
 

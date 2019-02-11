@@ -2,6 +2,7 @@
 <resources>
     <dimen name="textWidth">320dp</dimen>
     <dimen name="textHeight">37dp</dimen>
+    <dimen name="textHolderWidth">120dp</dimen>
     <dimen name="buttonWidth">240dp</dimen>
     <dimen name="buttonHeight">37dp</dimen>
     <dimen name="infiniteWidth">0dp</dimen>

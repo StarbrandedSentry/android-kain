@@ -217,18 +217,18 @@ public class AccountFragment extends Fragment {
                 TextView userlevelView = getView().findViewById(R.id.userlevelText);
                 User user = dataSnapshot.getValue(User.class);
                 //setting names
-                nameView.setText("NAME: " + user.getName());
-                emailView.setText("EMAIL: " + fbUser.getEmail());
+                nameView.setText(user.getName());
+                emailView.setText(fbUser.getEmail());
                 if(user.getUser_level() == 1)
                 {
-                    userlevelView.setText("USER TYPE: Normal");
+                    userlevelView.setText("Normal");
                 }
                 else if(user.getUser_level() == 2)
                 {
-                    userlevelView.setText("USER TYPE: Owner");
+                    userlevelView.setText("Owner");
                 }
                 else if(user.getUser_level() == 3) {
-                    userlevelView.setText("USER TYPE: Admin");
+                    userlevelView.setText("Admin");
                 }
             }
             @Override

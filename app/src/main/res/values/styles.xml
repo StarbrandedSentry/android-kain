@@ -39,12 +39,19 @@
         <item name = "android:paddingStart">@dimen/defStartPadding</item>
         <item name ="android:textAlignment">textStart</item>
         <item name = "android:color">@color/colorBlack</item>
-        <item name = "android:gravity">center_vertical</item>
+        <item name = "android:gravity">center</item>
     </style>
 
     <style name="Title">
         <item name = "android:textColor">@color/colorPrimary</item>
         <item name = "android:textStyle">bold</item>
         <item name = "android:textSize">@dimen/largeFont</item>
+    </style>
+
+    <style name="TitleHolder">
+        <item name = "android:textColor">@color/colorWhite</item>
+        <item name = "android:paddingEnd">@dimen/defStartPadding</item>
+        <item name = "android:gravity">center</item>
+        <item name = "android:textStyle">bold</item>
     </style>
 </resources>
