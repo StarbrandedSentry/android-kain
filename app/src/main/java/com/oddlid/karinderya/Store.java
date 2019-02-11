@@ -1,6 +1,10 @@
 package com.oddlid.karinderya;
 
 public class Store {
+    public Store(){
+        //needed empty constructor
+    }
+
     public Store(String uid, String name, String location)
     {
         this.uid = uid;
