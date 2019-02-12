@@ -14,19 +14,21 @@ public class WorkingStoreAdapter extends RecyclerView.Adapter<WorkingStoreAdapte
     private ArrayList<String> names;
     private ArrayList<String> ids;
     private ArrayList<String> locations;
+    private OnCardListener onCardListener;
 
-    public WorkingStoreAdapter(ArrayList<String> names, ArrayList<String> ids, ArrayList<String> locations)
+    public WorkingStoreAdapter(ArrayList<String> names, ArrayList<String> ids, ArrayList<String> locations, OnCardListener onCardListener)
     {
         this.names = names;
         this.ids = ids;
         this.locations = locations;
+        this.onCardListener = onCardListener;
     }
 
     @NonNull
     @Override
     public StoreViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.active_layout, viewGroup, false);
-        return new StoreViewHolder(v);
+        return new StoreViewHolder(v, onCardListener);
     }
 
     @Override
@@ -41,19 +43,34 @@ public class WorkingStoreAdapter extends RecyclerView.Adapter<WorkingStoreAdapte
         return names.size();
     }
 
-    public class StoreViewHolder extends RecyclerView.ViewHolder
+    public class StoreViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         public TextView id;
         public TextView name;
         public TextView location;
         public CardView parentLayout;
-        public StoreViewHolder(@NonNull View itemView) {
+        OnCardListener onCardListener;
+        public StoreViewHolder(@NonNull View itemView, OnCardListener onCardListener) {
             super(itemView);
 
             id = itemView.findViewById(R.id.active_store_id);
             name = itemView.findViewById(R.id.active_store_name);
             location = itemView.findViewById(R.id.active_store_location);
             parentLayout = itemView.findViewById(R.id.active_store_layout);
+            this.onCardListener = onCardListener;
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            onCardListener.onCardClick(getAdapterPosition());
         }
     }
+
+    public interface OnCardListener
+    {
+        void onCardClick(int position);
+    }
+
 }

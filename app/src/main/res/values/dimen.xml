@@ -10,6 +10,7 @@
     <dimen name="materialPadding">3dp</dimen>
     <dimen name="galleryHeight">150dp</dimen>
     <dimen name="squareImage">110dp</dimen>
+    <dimen name="bannerHeight">140dp</dimen>
 
     <dimen name="defFont">15dp</dimen>
     <dimen name="smallFont">12dp</dimen>

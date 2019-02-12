@@ -3,6 +3,7 @@ package com.oddlid.karinderya;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -28,7 +29,7 @@ import java.util.Map;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ManageFragment extends Fragment implements RequestAdapter.OnNoteListener {
+public class ManageFragment extends Fragment implements RequestAdapter.OnNoteListener, WorkingStoreAdapter.OnCardListener {
     //init arrays
     private RecyclerView recyclerView;
     private RecyclerView.Adapter recyclerAdapter;
@@ -158,15 +159,10 @@ public class ManageFragment extends Fragment implements RequestAdapter.OnNoteLis
                         ids.add(data.getKey());
                     }
                 }
-                /*for(DataSnapshot data : dataSnapshot.getChildren())
-                {
-
-                    mRequestID.add(data.getKey());
-                }*/
                 recyclerView = getView().findViewById(R.id.f_manage_activeRecycler);
                 recyclerView.setHasFixedSize(true);
                 layoutManager = new LinearLayoutManager(getContext());
-                recyclerAdapter = new WorkingStoreAdapter(ids, names, locations);
+                recyclerAdapter = new WorkingStoreAdapter(ids, names, locations, ManageFragment.this);
 
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(recyclerAdapter);
@@ -179,4 +175,29 @@ public class ManageFragment extends Fragment implements RequestAdapter.OnNoteLis
         });
     }
 
+    public void onCardClick(final int position)
+    {
+        DatabaseReference requestDB = FirebaseDatabase.getInstance().getReference().child("Stores");
+        requestDB.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<String> mRequestID = new ArrayList<>();
+                for(DataSnapshot data : dataSnapshot.getChildren())
+                {
+                    mRequestID.add(data.getKey());
+                }
+                final String id = mRequestID.get(position);
+
+                Intent intent = new Intent(getActivity(), ActiveStoreActivity.class);
+                intent.putExtra("id", id);
+                intent.putExtra("byOwner", true);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 }
