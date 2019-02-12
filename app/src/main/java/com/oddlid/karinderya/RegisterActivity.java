@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -203,6 +204,9 @@ public class RegisterActivity extends AppCompatActivity {
             }
             removeImageBtn = (Button) findViewById(R.id.removeImageBtn);
             removeImageBtn.setVisibility(View.VISIBLE);
+
+            Button register = findViewById(R.id.registerBtn);
+            register.setEnabled(true);
         }
     }
     //END
@@ -225,6 +229,9 @@ public class RegisterActivity extends AppCompatActivity {
         gallery = (LinearLayout) findViewById(R.id.gallery);
         gallery.removeAllViews();
         pulledImages.clear();
+
+        Button register = findViewById(R.id.registerBtn);
+        register.setEnabled(false);
 
         removeImageBtn = (Button) findViewById(R.id.removeImageBtn);
         removeImageBtn.setVisibility(View.GONE);
@@ -255,74 +262,51 @@ public class RegisterActivity extends AppCompatActivity {
                         requestDB.setValue(request).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull final Task<Void> task) {
+                                //int m = 1;
                                 UploadTask uploadTask;
-                                if(!pulledImages.isEmpty())
+                                for(int i = 0; i < imageCount; i++)
                                 {
-                                    for(int i = 0; i < imageCount; i++)
-                                    {
-                                        storeRef = FirebaseStorage.getInstance().getReference().child("Stores").child(id).child("entry_images").child(""+i);
-                                        uploadTask = storeRef.putBytes(pulledImages.get(i));
-                                        uploadTask.addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                snackbarMessage(view, "Oh no! something went wrong! Try again!");
-                                                return;
-                                            }
-                                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                            @Override
-                                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                                success = true;
-
-                                                taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                                    @Override
-                                                    public void onSuccess(Uri uri) {
-                                                        String SALTCHARS = "1234567890";
-                                                        StringBuilder salt = new StringBuilder();
-                                                        Random rnd = new Random();
-                                                        while (salt.length() < 3) { // length of the random string.
-                                                            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-                                                            salt.append(SALTCHARS.charAt(index));
-                                                        }
-                                                        String saltStr = salt.toString();
-                                                        final String downloadUrl = uri.toString();
-
-                                                        //EntryUpload upload = new EntryUpload(downloadUrl);
-                                                        DatabaseReference newRef = FirebaseDatabase.getInstance().getReference()
-                                                                .child("Stores").child(id).child("entry_images").child(saltStr).child("image_url");
-                                                        newRef.setValue(downloadUrl);
-                                                    }
-                                                });
-                                            }
-                                        }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                            /*storeRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    storeRef = FirebaseStorage.getInstance().getReference().child("Stores").child(id).child("entry_images").child(""+i);
+                                    uploadTask = storeRef.putBytes(pulledImages.get(i));
+                                    uploadTask.addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            snackbarMessage(view, "Oh no! something went wrong! Try again!");
+                                            return;
+                                        }
+                                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                            taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                                 @Override
                                                 public void onSuccess(Uri uri) {
+                                                    String SALTCHARS = "1234567890";
+                                                    StringBuilder salt = new StringBuilder();
+                                                    Random rnd = new Random();
+                                                    while (salt.length() < 3) { // length of the random string.
+                                                        int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+                                                        salt.append(SALTCHARS.charAt(index));
+                                                    }
+                                                    String saltStr = salt.toString();
+                                                    final String downloadUrl = uri.toString();
 
+                                                    //EntryUpload upload = new EntryUpload(downloadUrl);
+                                                    DatabaseReference newRef = FirebaseDatabase.getInstance().getReference()
+                                                            .child("Stores").child(id).child("entry_images").child(saltStr).child("image_url");
+                                                    newRef.setValue(downloadUrl);
                                                 }
-                                            });*/
-                                            }
-                                        });
-                                    }
+                                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Uri> task) {
+                                                    Toast.makeText(getApplicationContext(), "Registered! Wait until it gets approved!", Toast.LENGTH_LONG).show();
+                                                    finish();
+                                                }
+                                            });
+                                        }
+
+                                    });
                                 }
-                                else
-                                {
-                                    //else
-                                    success = true;
-                                }
-                            if(success)
-                            {
-                                snackbarMessage(view, "Success! Now wait until an admin confirms your request!");
-                                editName = (EditText) findViewById(R.id.editStoreName);
-                                editLocation = (EditText) findViewById(R.id.editLocation);
-                                editName.setText("");
-                                editLocation.setText("");
-                                gallery = (LinearLayout) findViewById(R.id.gallery);
-                                gallery.removeAllViews();
-                                pulledImages.clear();
                             }
-                        }
                         });
                         flag = true;
                     }

@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -187,9 +186,9 @@ public class ActRequestActivity extends AppCompatActivity {
                     Map<String, Object> statusMap = new HashMap<>();
                     statusMap.put("status", "denied");
                     dbRef = FirebaseDatabase.getInstance().getReference().child("Stores").child(reqID);
-                    dbRef.updateChildren(statusMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    dbRef.updateChildren(statusMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
-                        public void onSuccess(Void aVoid) {
+                        public void onComplete(@NonNull Task<Void> task) {
                             Intent open = new Intent(ActRequestActivity.this, AdminActivity.class);
                             open.putExtra("message", "Request has been denied!");
                             open.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

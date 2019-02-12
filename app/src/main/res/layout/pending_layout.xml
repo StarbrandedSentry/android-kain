@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="@dimen/defFont"
+            android:textColor="@color/colorBlack"
             android:text="Prop ID"
             android:paddingStart="@dimen/defStartPadding"
             />
@@ -29,6 +30,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/defFont"
             android:paddingStart="@dimen/defStartPadding"
+            android:textColor="@color/colorBlack"
             android:text="Proposed Name"
             android:layout_below="@+id/propID"/>
 
@@ -38,6 +40,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/defStartPadding"
             android:text="Date Made"
+            android:textColor="@color/colorBlack"
             android:textSize="@dimen/defFont"
             android:layout_below="@+id/propStoreName"/>
     </RelativeLayout>
