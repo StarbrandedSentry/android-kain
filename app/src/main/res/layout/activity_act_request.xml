@@ -101,20 +101,6 @@
         app:layout_constraintTop_toBottomOf="@+id/propLocationView"
         app:layout_constraintVertical_bias="0.0" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/requestImageRecycler"
-        android:layout_width="0dp"
-        android:layout_height="270dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/round_border_btn"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/propDateView"
-        app:layout_constraintVertical_bias="0.0" />
-
     <Button
         android:id="@+id/a_actreq_accept_btn"
         style="@style/FilledFlat"
@@ -131,9 +117,30 @@
         android:text="Accept"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/requestImageRecycler"
-        app:layout_constraintVertical_bias="0.26" />
+        app:layout_constraintTop_toBottomOf="@+id/a_actreq_downloadCert_btn"
+        app:layout_constraintVertical_bias="0.685" />
+
+    <Button
+        android:id="@+id/a_actreq_downloadCert_btn"
+        style="@style/FilledFlat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="416dp"
+        android:width="@dimen/buttonWidth"
+        android:height="@dimen/buttonHeight"
+        android:background="@drawable/round_btn"
+        android:onClick="fetchCertificate"
+        android:text="DOWNLOAD CERTIFICATE"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/propDateView" />
 
     <Button
         android:id="@+id/a_actreq_deny_btn"

@@ -1,14 +1,16 @@
 package com.oddlid.karinderya;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -25,9 +27,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 public class ActRequestActivity extends AppCompatActivity {
     //control init
@@ -36,6 +41,7 @@ public class ActRequestActivity extends AppCompatActivity {
     RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     Button acceptBtn;
+    File certificate;
 
     private ArrayList<EntryUpload> mUploads;
 
@@ -88,29 +94,7 @@ public class ActRequestActivity extends AppCompatActivity {
                 date.setText("Date Made: " + request.getDate_made());
                 location.setText("Location: " + request.getLocation());
 
-                DatabaseReference imgRef = FirebaseDatabase.getInstance().getReference().child("Stores").child(dataSnapshot.getKey()).child("entry_images");
-                imgRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        ArrayList<String> mUploads = new ArrayList<>();
-                        for(DataSnapshot data : dataSnapshot.getChildren())
-                        {
-                            mUploads.add(data.child("image_url").getValue(String.class));
-                        }
-                        mRecyclerView = findViewById(R.id.requestImageRecycler);
-                        mRecyclerView.setHasFixedSize(true);
-                        layoutManager = new LinearLayoutManager(getApplicationContext());
-                        mAdapter = new EntryImageAdapter(mUploads);
 
-                        mRecyclerView.setLayoutManager(layoutManager);
-                        mRecyclerView.setAdapter(mAdapter);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
 
             }
 
@@ -203,4 +187,46 @@ public class ActRequestActivity extends AppCompatActivity {
         }
     };
 
+
+    public void fetchCertificate(View view)
+    {
+        Intent intent = getIntent();
+        final String reqID = intent.getStringExtra("propID");
+        File storagePath = new File(Environment.getExternalStorageDirectory(), "directory_name");
+        // Create direcorty if not exists
+        if(!storagePath.exists()) {
+            storagePath.mkdirs();
+        }
+        certificate = new File(storagePath, "certificate");
+
+        /*StorageReference certRef = FirebaseStorage.getInstance().getReference("Stores").child(reqID).child("certificate");
+        certRef.getFile(certificate).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+
+            }
+        });*/
+
+        DatabaseReference cerRef = FirebaseDatabase.getInstance().getReference("Stores").child(reqID).child("certificate_url");
+        cerRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String url = dataSnapshot.getValue().toString();
+                Uri uri = Uri.parse(url);
+
+                DownloadManager dManager = (DownloadManager) ActRequestActivity.this.getSystemService(Context.DOWNLOAD_SERVICE);
+                DownloadManager.Request request = new DownloadManager.Request(uri);
+
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                request.setDestinationInExternalFilesDir(ActRequestActivity.this, DIRECTORY_DOWNLOADS, "certificate.pdf");
+
+                dManager.enqueue(request);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 }

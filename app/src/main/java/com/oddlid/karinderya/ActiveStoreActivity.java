@@ -66,13 +66,17 @@ public class ActiveStoreActivity extends AppCompatActivity {
     {
         String id = getIntent().getStringExtra("id");
         DatabaseReference storeRef = FirebaseDatabase.getInstance().getReference().child("Stores").child(id);
-        storeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        storeRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 location = findViewById(R.id.a_activeStore_location_text);
                 name = findViewById(R.id.a_activeStore_name_text);
                 name.setText(dataSnapshot.child("name").getValue().toString());
                 location.setText(dataSnapshot.child("location").getValue().toString());
+                banner = findViewById(R.id.a_activeStore_banner);
+                Picasso.get()
+                        .load(dataSnapshot.child("banner").getValue().toString())
+                        .into(banner);
             }
 
             @Override
@@ -92,14 +96,25 @@ public class ActiveStoreActivity extends AppCompatActivity {
         uploadProg = findViewById(R.id.a_activeStore_banner_pb);
         uploadProg.setVisibility(View.VISIBLE);
 
-        String id = getIntent().getStringExtra("id");
-        StorageReference bannerRef = storageRef.child(id).child("banner");
+        final String id = getIntent().getStringExtra("id");
+        final StorageReference bannerRef = storageRef.child(id).child("banner");
         bannerRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                uploadProg.setVisibility(View.GONE);
+                bannerRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        DatabaseReference bannerDB = FirebaseDatabase.getInstance().getReference("Stores").child(id).child("banner");
+                        bannerDB.setValue(uri.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                uploadProg.setVisibility(View.GONE);
 
-                Toast.makeText(getApplicationContext(), "Banner changed!", Toast.LENGTH_LONG);
+                                Toast.makeText(getApplicationContext(), "Banner changed!", Toast.LENGTH_LONG);
+                            }
+                        });
+                    }
+                });
 
             }
         });

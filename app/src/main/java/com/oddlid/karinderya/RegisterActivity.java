@@ -2,13 +2,10 @@ package com.oddlid.karinderya;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.ClipData;
-import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,11 +14,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,29 +34,23 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 public class RegisterActivity extends AppCompatActivity {
     //other initializations
     private final int REQUEST_CODE = 1553, REQUEST_EXTERNAL_STORAGE = 1;
     private int imageCount;
-    //String id;
     private Date currentDate;
     private List<byte[]> pulledImages;
     private boolean success, flag;
-    Button selectImageBtn, removeImageBtn, registerBtn;
-    LinearLayout gallery;
+    Button registerBtn;
+    private Uri pdfUri;
     EditText editName, editLocation;
+    ProgressBar pb;
 
     //firebase initializations
     FirebaseAuth fbAuth;
@@ -74,11 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         fbAuth = FirebaseAuth.getInstance();
-        //id = "";
-        success = true;
-        pulledImages  = new ArrayList<>();
 
-        selectImageBtn = (Button) findViewById(R.id.selectImageBtn);
 
     }
 
@@ -120,126 +106,17 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    //GETTING IMAGE FROM GALLERY
-    private void handlePermission()
-    {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            openImageChooser();
-        }
-        else
-        {
-            if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-            {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE);
-            }
-            else
-            {
-                openImageChooser();
-            }
-        }
-    }
-    public void onRequestPermissionResult(int requestCode, String permissions[], int[] grantResults)
-    {
-        switch(requestCode)
-        {
-            case REQUEST_EXTERNAL_STORAGE:{
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
-                    openImageChooser();
-                }
-                else
-                {
-                    snackbarMessage(findViewById(android.R.id.content), "You need to permit access to storage. Good luck!");
-                }
-                return;
-            }
-        }
-    }
-    private void openImageChooser()
-    {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select images"), REQUEST_CODE);
-    }
-    @Override
-    public void onActivityResult(final int requestCode, final int resultCode, @Nullable final Intent data){
-        super.onActivityResult(requestCode, resultCode, data);
-        ClipData clipData = data.getClipData();
-        if (null != data) {
-            imageCount = clipData.getItemCount();
-            gallery = (LinearLayout) findViewById(R.id.gallery);
-
-            for(int i = 0; i < clipData.getItemCount(); i++)
-            {
-                ImageView storeImage = new ImageView(this);
-                //storeImage.setMaxWidth((int) getResources().getDimension(R.dimen.squareImage));
-                //storeImage.setMaxHeight((int) getResources().getDimension(R.dimen.squareImage));
-                if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN)
-                {
-                    storeImage.setBackground(getDrawable(R.drawable.round_border_btn));
-                }
-                storeImage.setPadding(25, 25, 25, 25);
-                storeImage.setAdjustViewBounds(true);
-                storeImage.setImageURI(clipData.getItemAt(i).getUri());
-
-                //save bytes
-                //pulledImages.add(getBytes(clipData.getItemAt(i).getUri()));
-
-                try
-                {
-                    InputStream iStream =   getContentResolver().openInputStream(clipData.getItemAt(i).getUri());
-                    pulledImages.add(getBytes(iStream));
-                }catch (FileNotFoundException ex)
-                {
-                    snackbarMessage(findViewById(android.R.id.content), ex.getMessage());
-                }
-                catch (IOException ex)
-                {
-                    snackbarMessage(findViewById(android.R.id.content), ex.getMessage());
-                }
-                gallery.addView(storeImage);
-            }
-            removeImageBtn = (Button) findViewById(R.id.removeImageBtn);
-            removeImageBtn.setVisibility(View.VISIBLE);
-
-            Button register = findViewById(R.id.registerBtn);
-            register.setEnabled(true);
-        }
-    }
-    //END
-
     private void snackbarMessage(View v, String message)
     {
         Snackbar snack = Snackbar.make(v, message, Snackbar.LENGTH_LONG);
         snack.show();
     }
 
-    //select image button logic
-    public void selectImage(View view)
-    {
-        handlePermission();
-    }
-
-    //remove image button logic
-    public void removeImage(View view)
-    {
-        gallery = (LinearLayout) findViewById(R.id.gallery);
-        gallery.removeAllViews();
-        pulledImages.clear();
-
-        Button register = findViewById(R.id.registerBtn);
-        register.setEnabled(false);
-
-        removeImageBtn = (Button) findViewById(R.id.removeImageBtn);
-        removeImageBtn.setVisibility(View.GONE);
-    }
-
     //register button logic
     public void registerBtn(final View view)
     {
+        pb = findViewById(R.id.a_register_pb);
+        pb.setVisibility(View.VISIBLE);
         registerBtn = (Button) findViewById(R.id.registerBtn);
         registerBtn.setEnabled(false);
         boolean unique = false;
@@ -257,55 +134,39 @@ public class RegisterActivity extends AppCompatActivity {
                         editName = (EditText) findViewById(R.id.editStoreName);
                         final String uid = fbAuth.getUid();
                         editLocation = (EditText) findViewById(R.id.editLocation);
-                        Request request = new Request(editName.getText().toString(), uid, editLocation.getText().toString(), getCurrentDate(), "pending");
+                        final Request request = new Request(editName.getText().toString(), uid, editLocation.getText().toString(), getCurrentDate(), "pending");
 
                         requestDB.setValue(request).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull final Task<Void> task) {
-                                //int m = 1;
-                                UploadTask uploadTask;
-                                for(int i = 0; i < imageCount; i++)
-                                {
-                                    storeRef = FirebaseStorage.getInstance().getReference().child("Stores").child(id).child("entry_images").child(""+i);
-                                    uploadTask = storeRef.putBytes(pulledImages.get(i));
-                                    uploadTask.addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            snackbarMessage(view, "Oh no! something went wrong! Try again!");
-                                            return;
-                                        }
-                                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                            taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                                @Override
-                                                public void onSuccess(Uri uri) {
-                                                    String SALTCHARS = "1234567890";
-                                                    StringBuilder salt = new StringBuilder();
-                                                    Random rnd = new Random();
-                                                    while (salt.length() < 3) { // length of the random string.
-                                                        int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-                                                        salt.append(SALTCHARS.charAt(index));
+                                final StorageReference fileRef = FirebaseStorage.getInstance().getReference("Stores").child(id).child("certificate");
+                                fileRef.putFile(pdfUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                        fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+                                                String url = uri.toString();
+
+                                                requestDB = FirebaseDatabase.getInstance().getReference("Stores").child(id).child("certificate_url");
+                                                requestDB.setValue(url).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        Toast.makeText(getApplicationContext(), "Registered! Wait until it gets approved!", Toast.LENGTH_LONG).show();
+                                                        finish();
                                                     }
-                                                    String saltStr = salt.toString();
-                                                    final String downloadUrl = uri.toString();
+                                                });
+                                            }
+                                        });
 
-                                                    //EntryUpload upload = new EntryUpload(downloadUrl);
-                                                    DatabaseReference newRef = FirebaseDatabase.getInstance().getReference()
-                                                            .child("Stores").child(id).child("entry_images").child(saltStr).child("image_url");
-                                                    newRef.setValue(downloadUrl);
-                                                }
-                                            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Uri> task) {
-                                                    Toast.makeText(getApplicationContext(), "Registered! Wait until it gets approved!", Toast.LENGTH_LONG).show();
-                                                    finish();
-                                                }
-                                            });
-                                        }
 
-                                    });
-                                }
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Snackbar.make(view, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                                    }
+                                });
                             }
                         });
                         flag = true;
@@ -323,19 +184,6 @@ public class RegisterActivity extends AppCompatActivity {
         registerBtn.setEnabled(true);
     }
 
-    //bytes factory
-    public byte[] getBytes(InputStream inputStream) throws  IOException{
-        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-        int bufferSize = 1024;
-        byte[] buffer = new byte[bufferSize];
-
-        int len = 0;
-        while ((len = inputStream.read(buffer)) != -1) {
-            byteBuffer.write(buffer, 0, len);
-        }
-        return byteBuffer.toByteArray();
-    }
-
     //get current date
     private String getCurrentDate()
     {
@@ -346,10 +194,68 @@ public class RegisterActivity extends AppCompatActivity {
         return date;
     }
 
-    private String getFileExtension(Uri uri)
+    //getting files
+    public void chooseFile(View view)
     {
-        ContentResolver cr = getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getExtensionFromMimeType(cr.getType(uri));
+        if(ContextCompat.checkSelfPermission(RegisterActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(RegisterActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1531);
+        }
+
+        selectPdf();
     }
+
+    private void selectPdf()
+    {
+        Intent intent = new Intent();
+        intent.setType("application/pdf");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 0531);
+    }
+
+    //called after every request permission is answered
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode == 1531)
+        {
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                selectPdf();
+                registerBtn = (Button) findViewById(R.id.registerBtn);
+                registerBtn.setEnabled(true);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == 0531) //checks if request code is the same for getting file
+        {
+            if(resultCode == RESULT_OK && data != null)
+            {
+                pdfUri = data.getData();
+                //File name = new File(pdfUri.getPath());
+                //String dir = name.getParent();
+                TextView uriName = findViewById(R.id.a_register_certificate_text);
+                uriName.setText(pdfUri.getLastPathSegment());
+
+                Button register = findViewById(R.id.registerBtn);
+                register.setEnabled(true);
+
+                Button remove = findViewById(R.id.a_register_removeFile_btn);
+                remove.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    public void removeFile(View view)
+    {
+        TextView uriName = findViewById(R.id.a_register_certificate_text);
+        uriName.setText("");
+        pdfUri = null;
+
+        Button remove = findViewById(R.id.a_register_removeFile_btn);
+        remove.setVisibility(View.GONE);
+    }
+
 }

@@ -16,13 +16,14 @@
         android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="Karinderya Name"
-        android:textSize="@dimen/defFont"
         android:inputType="textPersonName"
+        android:textSize="@dimen/defFont"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.511"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleView"
-        app:layout_constraintVertical_bias="0.129" />
+        app:layout_constraintTop_toBottomOf="@+id/a_register_pb"
+        app:layout_constraintVertical_bias="0.100000024" />
 
     <EditText
         android:id="@+id/editLocation"
@@ -65,29 +66,12 @@
         android:layout_height="@dimen/textHeight"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
-        android:text="Show pictures of your karinderya (at least 2)"
+        android:text="Choose file for verification"
         android:textSize="@dimen/defFont"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editLocation"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <Button
-        android:id="@+id/selectImageBtn"
-        style="@style/FilledFlat"
-        android:layout_width="200dp"
-        android:layout_height="@dimen/buttonHeight"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/round_btn"
-        android:onClick="selectImage"
-        android:text="Select Images"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
         app:layout_constraintVertical_bias="0.0" />
 
     <Button
@@ -97,6 +81,7 @@
         android:layout_height="@dimen/buttonHeight"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="76dp"
         android:background="@drawable/round_btn"
         android:enabled="false"
         android:onClick="registerBtn"
@@ -105,46 +90,82 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.445"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/selectImageBtn"
-        app:layout_constraintVertical_bias="0.503" />
+        app:layout_constraintTop_toBottomOf="@+id/a_register_chooseFile_btn2"
+        app:layout_constraintVertical_bias="0.72" />
 
     <Button
-        android:id="@+id/removeImageBtn"
+        android:id="@+id/a_register_chooseFile_btn"
         style="@style/FilledFlat"
-        android:layout_width="123dp"
+        android:layout_width="0dp"
         android:layout_height="@dimen/buttonHeight"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="256dp"
         android:background="@drawable/round_btn"
-        android:onClick="removeImage"
-        android:text="remove"
+        android:onClick="chooseFile"
+        android:text="choose file"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/a_register_certificate_text"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+    <Button
+        android:id="@+id/a_register_removeFile_btn"
+        style="@style/FilledFlat"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/buttonHeight"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="256dp"
+        android:background="@drawable/round_btn"
+        android:onClick="removeFile"
+        android:text="remove file"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/selectImageBtn"
-        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/a_register_chooseFile_btn"
         app:layout_constraintVertical_bias="0.0" />
 
-    <HorizontalScrollView
-        android:id="@+id/horizontalScrollView"
-        android:layout_width="@dimen/infiniteWidth"
-        android:layout_height="150dp"
+    <TextView
+        android:id="@+id/a_register_certificate_text"
+        android:layout_width="@dimen/textWidth"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/round_border_btn"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="344dp"
+        android:background="@drawable/textviewbox"
+        android:gravity="center|left"
+        android:paddingStart="@dimen/materialPadding"
+        android:paddingTop="@dimen/materialPadding"
+        android:paddingBottom="@dimen/materialPadding"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/defFont"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addPicturesText"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.0" />
 
-        <LinearLayout
-            android:id="@+id/gallery"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal" />
-    </HorizontalScrollView>
+    <ProgressBar
+        android:id="@+id/a_register_pb"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleView"
+        app:layout_constraintVertical_bias="0.031" />
 
 </android.support.constraint.ConstraintLayout>
