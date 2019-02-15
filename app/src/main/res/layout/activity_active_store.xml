@@ -112,6 +112,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
+            android:background="@drawable/border_btn"
             app:srcCompat="@android:drawable/sym_def_app_icon" />
 
         <Button
@@ -137,6 +138,7 @@
             android:layout_height="@dimen/textHeight"
             android:layout_marginEnd="8dp"
             android:background="@drawable/round_border_btn"
+            android:onClick="addAvailableItem"
             android:text="add"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/f_acc_available_text"
@@ -196,6 +198,18 @@
             app:layout_constraintHorizontal_bias="0.976"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/a_actStore_availMenu"
+            android:layout_width="0dp"
+            android:layout_height="225dp"
+            android:background="@drawable/border_btn"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/f_acc_available_text"
             app:layout_constraintVertical_bias="0.0" />
 
     </android.support.constraint.ConstraintLayout>

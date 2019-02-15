@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,7 +27,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-public class ActiveStoreActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenuAdapter.OnMenuListener{
     private static final int PICK_IMAGE_REQUEST = 1;
 
     //control init
@@ -33,6 +37,10 @@ public class ActiveStoreActivity extends AppCompatActivity {
     TextView name;
     ImageView banner;
     ProgressBar uploadProg;
+
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter recyclerAdapter;
+    private RecyclerView.LayoutManager layoutManager;
 
     private Uri imageUri;
 
@@ -60,6 +68,7 @@ public class ActiveStoreActivity extends AppCompatActivity {
         }
         banner = findViewById(R.id.a_activeStore_banner);
         initInfo();
+        initAvailMenu();
     }
 
     private void initInfo()
@@ -77,6 +86,41 @@ public class ActiveStoreActivity extends AppCompatActivity {
                 Picasso.get()
                         .load(dataSnapshot.child("banner").getValue().toString())
                         .into(banner);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void initAvailMenu()
+    {
+        String id = getIntent().getStringExtra("id");
+        DatabaseReference storeRef = FirebaseDatabase.getInstance().getReference().child("Stores").child(id)
+                .child("menu");
+        storeRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<String> names = new ArrayList<>();
+                ArrayList<String> images = new ArrayList<>();
+                for(DataSnapshot data : dataSnapshot.getChildren())
+                {
+                    if(data.child("availability").getValue().equals("available"))
+                    {
+                        names.add(data.child("name").getValue(String.class));
+                        images.add(data.child("image_url").getValue(String.class));
+
+                        recyclerView = findViewById(R.id.a_actStore_availMenu);
+                        recyclerView.setHasFixedSize(true);
+                        layoutManager = new GridLayoutManager(ActiveStoreActivity.this, 2);
+                        recyclerAdapter = new AvailMenuAdapter(images, names, ActiveStoreActivity.this);
+
+                        recyclerView.setLayoutManager(layoutManager);
+                        recyclerView.setAdapter(recyclerAdapter);
+                    }
+                }
             }
 
             @Override
@@ -120,6 +164,14 @@ public class ActiveStoreActivity extends AppCompatActivity {
         });
     }
 
+    public void addAvailableItem(View view)
+    {
+        String id = getIntent().getStringExtra("id");
+        Intent intent = new Intent(ActiveStoreActivity.this, AddItemActivity.class);
+        intent.putExtra("id", id);
+        startActivity(intent);
+    }
+
     public void chooseImage(View view)
     {
         Intent intent = new Intent();
@@ -140,5 +192,10 @@ public class ActiveStoreActivity extends AppCompatActivity {
                     .load(imageUri)
                     .into(banner);
         }
+    }
+
+    @Override
+    public void onMenuClick(int position) {
+
     }
 }

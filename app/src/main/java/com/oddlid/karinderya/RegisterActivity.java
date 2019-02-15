@@ -103,7 +103,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
         String saltStr = salt.toString();
         return saltStr;
-
     }
 
     private void snackbarMessage(View v, String message)
