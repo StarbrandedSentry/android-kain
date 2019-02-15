@@ -46,6 +46,7 @@ public class AvailMenuAdapter extends RecyclerView.Adapter<AvailMenuAdapter.Avai
     @Override
     public void onBindViewHolder(@NonNull AvailHolder availHolder, int i) {
         availHolder.name.setText(names.get(i));
+        availHolder.promo.setText(promos.get(i));
 
         Picasso.get()
                 .load(images.get(i))
@@ -64,11 +65,13 @@ public class AvailMenuAdapter extends RecyclerView.Adapter<AvailMenuAdapter.Avai
     {
         public ImageView image;
         public TextView name;
+        public TextView promo;
         OnMenuListener onMenuListener;
         public AvailHolder(@NonNull View itemView, OnMenuListener onMenuListener) {
             super(itemView);
             image = itemView.findViewById(R.id.avail_menu_image);
             name = itemView.findViewById(R.id.avail_menu_name);
+            promo = itemView.findViewById(R.id.avail_menu_promo);
             this.onMenuListener = onMenuListener;
 
             itemView.setOnClickListener(this);
@@ -92,6 +95,7 @@ public class AvailMenuAdapter extends RecyclerView.Adapter<AvailMenuAdapter.Avai
 
                 unavailable.setOnMenuItemClickListener(this);
                 delete.setOnMenuItemClickListener(this);
+                promo.setOnMenuItemClickListener(this);
             }
         }
 
@@ -104,6 +108,9 @@ public class AvailMenuAdapter extends RecyclerView.Adapter<AvailMenuAdapter.Avai
                     return true;
                 case 2:
                     onMenuListener.onDeleteClick(getAdapterPosition(), id);
+                    return true;
+                case 3:
+                    onMenuListener.onPromoClick(getAdapterPosition(), id);
                     return true;
             }
             return false;

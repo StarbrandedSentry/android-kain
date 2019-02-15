@@ -14,6 +14,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -39,7 +40,7 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
     private static final int PICK_IMAGE_REQUEST = 1;
 
     //control init
-    Dialog imageZoom;
+    Dialog imageZoom, promoMenu;
     TextView location;
     TextView name;
     ImageView banner;
@@ -74,8 +75,6 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
             cancelChange.setVisibility(View.VISIBLE);
             Button chooseImage = findViewById(R.id.a_activeStore_choosePhoto_btn);
             chooseImage.setVisibility(View.VISIBLE);
-            Button addPromo = findViewById(R.id.a_activeStore_addPromo_btn);
-            addPromo.setVisibility(View.VISIBLE);
         }
         banner = findViewById(R.id.a_activeStore_banner);
 
@@ -117,19 +116,21 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> names = new ArrayList<>();
                 ArrayList<String> images = new ArrayList<>();
+                ArrayList<String> promos = new ArrayList<>();
                 for(DataSnapshot data : dataSnapshot.getChildren())
                 {
                     if(data.child("availability").getValue().equals("available"))
                     {
                         names.add(data.child("name").getValue(String.class));
                         images.add(data.child("image_url").getValue(String.class));
+                        promos.add(data.child("promo_value").getValue(String.class));
 
                         boolean key = getIntent().getExtras().getBoolean("byOwner");
 
                         recyclerView = findViewById(R.id.a_actStore_availMenu);
                         recyclerView.setHasFixedSize(true);
                         layoutManager = new GridLayoutManager(ActiveStoreActivity.this, 2);
-                        recyclerAdapter = new AvailMenuAdapter(images, names, ActiveStoreActivity.this, key, data.getKey(), data.child("image_url").getValue(String.class));
+                        recyclerAdapter = new AvailMenuAdapter(images, names, promos, ActiveStoreActivity.this, key, data.getKey(), data.child("image_url").getValue(String.class));
 
                         recyclerView.setLayoutManager(layoutManager);
                         recyclerView.setAdapter(recyclerAdapter);
@@ -211,7 +212,7 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
     @Override
     public void onMenuClick(int position, String url) {
         imageZoom = new Dialog(this);
-        imageZoom.setContentView(R.layout.dialog_add_promo);
+        imageZoom.setContentView(R.layout.dialog_image_view);
 
         closeDialog = imageZoom.findViewById(R.id.d_addPromo_close_btn);
         closeDialog.setOnClickListener(new View.OnClickListener() {
@@ -257,6 +258,38 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
                 initAvailMenu();
             }
         });
+    }
+
+    @Override
+    public void onPromoClick(int position, String id) {
+        String itemID = getIntent().getStringExtra("id"), promoName, promoValue;
+        itemDB = itemDB.child(itemID).child("menu").child(id);
+
+        promoMenu = new Dialog(this);
+        promoMenu.setContentView(R.layout.dialog_add_promo);
+        final EditText name = promoMenu.findViewById(R.id.d_addPromo_promo_name);
+        final EditText value = promoMenu.findViewById(R.id.d_addPromo_promo_value);
+        Button btn = promoMenu.findViewById(R.id.d_addPromo_btn);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String, Object> statusMap = new HashMap<>();
+                statusMap.put("promo_name", name.getText().toString());
+                statusMap.put("promo_value", value.getText().toString());
+                itemDB.updateChildren(statusMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        initAvailMenu();
+                        promoMenu.dismiss();
+                    }
+                });
+            }
+        });
+        promoMenu.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        promoMenu.show();
+
+
+
     }
 
 
