@@ -2,8 +2,11 @@ package com.oddlid.karinderya;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -16,13 +19,21 @@ import java.util.ArrayList;
 public class AvailMenuAdapter extends RecyclerView.Adapter<AvailMenuAdapter.AvailHolder> {
     private ArrayList<String> images;
     private ArrayList<String> names;
+    private ArrayList<String> promos;
     private OnMenuListener onMenuListener;
+    private boolean key;
+    private String id;
+    private String url;
 
-    public AvailMenuAdapter(ArrayList<String> images, ArrayList<String> names, OnMenuListener onMenuListener)
+    public AvailMenuAdapter(ArrayList<String> images, ArrayList<String> names, ArrayList<String> promos, OnMenuListener onMenuListener, boolean key, String id, String url)
     {
         this.images = images;
         this.names = names;
         this.onMenuListener = onMenuListener;
+        this.promos = promos;
+        this.key = key;
+        this.id = id;
+        this.url = url;
     }
 
     @NonNull
@@ -41,7 +52,7 @@ public class AvailMenuAdapter extends RecyclerView.Adapter<AvailMenuAdapter.Avai
                 .fit().centerCrop(Gravity.CENTER)
                 .into(availHolder.image);
 
-        
+
     }
 
     @Override
@@ -49,7 +60,7 @@ public class AvailMenuAdapter extends RecyclerView.Adapter<AvailMenuAdapter.Avai
         return names.size();
     }
 
-    public class AvailHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+    public class AvailHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener, android.view.MenuItem.OnMenuItemClickListener
     {
         public ImageView image;
         public TextView name;
@@ -61,18 +72,56 @@ public class AvailMenuAdapter extends RecyclerView.Adapter<AvailMenuAdapter.Avai
             this.onMenuListener = onMenuListener;
 
             itemView.setOnClickListener(this);
+            itemView.setOnCreateContextMenuListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            onMenuListener.onMenuClick(getAdapterPosition());
+            onMenuListener.onMenuClick(getAdapterPosition(), url);
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            if(key)
+            {
+                menu.setHeaderTitle("Select action");
+
+                MenuItem unavailable = menu.add(Menu.NONE, 1, 1, "Set unavailable");
+                android.view.MenuItem delete = menu.add(Menu.NONE, 2, 2, "Delete item");
+                MenuItem promo = menu.add(Menu.NONE, 3, 3, "Add promo");
+
+                unavailable.setOnMenuItemClickListener(this);
+                delete.setOnMenuItemClickListener(this);
+            }
+        }
+
+        @Override
+        public boolean onMenuItemClick(android.view.MenuItem item) {
+            switch (item.getItemId())
+            {
+                case 1:
+                    onMenuListener.onUnavailableClick(getAdapterPosition(), id);
+                    return true;
+                case 2:
+                    onMenuListener.onDeleteClick(getAdapterPosition(), id);
+                    return true;
+            }
+            return false;
         }
     }
 
     public interface OnMenuListener
     {
-        void onMenuClick(int position);
+        void onMenuClick(int position, String url);
+
+        void onUnavailableClick(int position, String id);
+        void onDeleteClick(int position, String id);
+        void onPromoClick(int position, String id);
     }
 
 
+    public void setOnMenuListener(OnMenuListener listener)
+    {
+        onMenuListener = listener;
+    }
 }

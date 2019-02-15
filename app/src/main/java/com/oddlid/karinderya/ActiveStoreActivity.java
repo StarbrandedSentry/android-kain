@@ -1,6 +1,9 @@
 package com.oddlid.karinderya;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +14,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,15 +32,20 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenuAdapter.OnMenuListener{
     private static final int PICK_IMAGE_REQUEST = 1;
 
     //control init
+    Dialog imageZoom;
     TextView location;
     TextView name;
     ImageView banner;
     ProgressBar uploadProg;
+    ImageView zoomed;
+    ImageButton closeDialog;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter recyclerAdapter;
@@ -46,7 +55,7 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
 
     //firebase init
     StorageReference storageRef = FirebaseStorage.getInstance().getReference("Stores");
-
+    DatabaseReference itemDB = FirebaseDatabase.getInstance().getReference("Stores");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +74,11 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
             cancelChange.setVisibility(View.VISIBLE);
             Button chooseImage = findViewById(R.id.a_activeStore_choosePhoto_btn);
             chooseImage.setVisibility(View.VISIBLE);
+            Button addPromo = findViewById(R.id.a_activeStore_addPromo_btn);
+            addPromo.setVisibility(View.VISIBLE);
         }
         banner = findViewById(R.id.a_activeStore_banner);
+
         initInfo();
         initAvailMenu();
     }
@@ -112,10 +124,12 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
                         names.add(data.child("name").getValue(String.class));
                         images.add(data.child("image_url").getValue(String.class));
 
+                        boolean key = getIntent().getExtras().getBoolean("byOwner");
+
                         recyclerView = findViewById(R.id.a_actStore_availMenu);
                         recyclerView.setHasFixedSize(true);
                         layoutManager = new GridLayoutManager(ActiveStoreActivity.this, 2);
-                        recyclerAdapter = new AvailMenuAdapter(images, names, ActiveStoreActivity.this);
+                        recyclerAdapter = new AvailMenuAdapter(images, names, ActiveStoreActivity.this, key, data.getKey(), data.child("image_url").getValue(String.class));
 
                         recyclerView.setLayoutManager(layoutManager);
                         recyclerView.setAdapter(recyclerAdapter);
@@ -195,7 +209,55 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
     }
 
     @Override
-    public void onMenuClick(int position) {
+    public void onMenuClick(int position, String url) {
+        imageZoom = new Dialog(this);
+        imageZoom.setContentView(R.layout.dialog_add_promo);
 
+        closeDialog = imageZoom.findViewById(R.id.d_addPromo_close_btn);
+        closeDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageZoom.dismiss();
+            }
+        });
+        zoomed = imageZoom.findViewById(R.id.d_addPromo_image);
+        Picasso.get()
+                .load(url)
+                .into(zoomed);
+
+        imageZoom.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        imageZoom.show();
     }
+
+    @Override
+    public void onUnavailableClick(int position, String id) {
+        String itemID = getIntent().getStringExtra("id");
+        itemDB = itemDB.child(itemID).child("menu").child(id);
+
+        Map<String, Object> statusMap = new HashMap<>();
+        statusMap.put("availability", "unavailable");
+        itemDB.updateChildren(statusMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                initAvailMenu();
+            }
+        });
+    }
+
+    @Override
+    public void onDeleteClick(int position, String id) {
+        String itemID = getIntent().getStringExtra("id");
+        itemDB = itemDB.child(itemID).child("menu").child(id);
+
+        Map<String, Object> statusMap = new HashMap<>();
+        statusMap.put("availability", "removed");
+        itemDB.updateChildren(statusMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                initAvailMenu();
+            }
+        });
+    }
+
+
 }

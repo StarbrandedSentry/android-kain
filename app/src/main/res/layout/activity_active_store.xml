@@ -203,7 +203,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/a_actStore_availMenu"
             android:layout_width="0dp"
-            android:layout_height="225dp"
+            android:layout_height="330dp"
             android:background="@drawable/border_btn"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
