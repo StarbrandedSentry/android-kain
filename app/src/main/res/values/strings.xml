@@ -6,7 +6,17 @@
     <string name="nav_promos">Promos</string>
     <string name="nav_account">Account</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="nav_manage">Manage</string>
+
+    <string-array name="promo_type">
+        <item>Everyday</item>
+        <item>Every weekday</item>
+        <item>Every weekend</item>
+    </string-array>
+
+    <string-array name="promo_time">
+        <item>All day</item>
+        <item>Certain Time</item>
+    </string-array>
 </resources>

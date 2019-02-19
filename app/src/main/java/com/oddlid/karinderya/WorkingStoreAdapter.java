@@ -27,7 +27,7 @@ public class WorkingStoreAdapter extends RecyclerView.Adapter<WorkingStoreAdapte
     @NonNull
     @Override
     public StoreViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.active_layout, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_active_store, viewGroup, false);
         return new StoreViewHolder(v, onCardListener);
     }
 

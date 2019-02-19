@@ -52,7 +52,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
     @NonNull
     @Override
     public RequestViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.pending_layout, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_pending, viewGroup, false);
         RequestViewHolder rvh = new RequestViewHolder(v, mOnNoteListener);
         return rvh;
     }

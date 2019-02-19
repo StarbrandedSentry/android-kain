@@ -8,4 +8,5 @@
     <color name="defaultBackground">#FAFAFA</color>
     <color name="colorLink">#0645AD</color>
     <color name="colorLinkPressed">#474787</color>
+    <color name="colorHint">#d1ccc0</color>
 </resources>

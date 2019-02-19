@@ -212,5 +212,39 @@
             app:layout_constraintTop_toBottomOf="@+id/f_acc_available_text"
             app:layout_constraintVertical_bias="0.0" />
 
+        <Button
+            android:id="@+id/a_activeStore_createPromo_btn"
+            style="@style/FilledFlat"
+            android:layout_width="@dimen/buttonWidth"
+            android:layout_height="@dimen/buttonHeight"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="160dp"
+            android:background="@drawable/round_btn"
+            android:onClick="createPromo"
+            android:padding="@dimen/materialPadding"
+            android:text="create promo"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/a_actStore_availMenu"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/a_activeStore_promo_view"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/round_btn"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/a_activeStore_createPromo_btn" />
+
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

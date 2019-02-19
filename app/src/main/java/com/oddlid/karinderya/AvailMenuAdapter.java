@@ -19,18 +19,16 @@ import java.util.ArrayList;
 public class AvailMenuAdapter extends RecyclerView.Adapter<AvailMenuAdapter.AvailHolder> {
     private ArrayList<String> images;
     private ArrayList<String> names;
-    private ArrayList<String> promos;
     private OnMenuListener onMenuListener;
     private boolean key;
     private String id;
     private String url;
 
-    public AvailMenuAdapter(ArrayList<String> images, ArrayList<String> names, ArrayList<String> promos, OnMenuListener onMenuListener, boolean key, String id, String url)
+    public AvailMenuAdapter(ArrayList<String> images, ArrayList<String> names, OnMenuListener onMenuListener, boolean key, String id, String url)
     {
         this.images = images;
         this.names = names;
         this.onMenuListener = onMenuListener;
-        this.promos = promos;
         this.key = key;
         this.id = id;
         this.url = url;
@@ -39,14 +37,13 @@ public class AvailMenuAdapter extends RecyclerView.Adapter<AvailMenuAdapter.Avai
     @NonNull
     @Override
     public AvailHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.avail_menu_layout, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_menu, viewGroup, false);
         return new AvailHolder(v, onMenuListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull AvailHolder availHolder, int i) {
         availHolder.name.setText(names.get(i));
-        availHolder.promo.setText(promos.get(i));
 
         Picasso.get()
                 .load(images.get(i))
@@ -65,13 +62,11 @@ public class AvailMenuAdapter extends RecyclerView.Adapter<AvailMenuAdapter.Avai
     {
         public ImageView image;
         public TextView name;
-        public TextView promo;
         OnMenuListener onMenuListener;
         public AvailHolder(@NonNull View itemView, OnMenuListener onMenuListener) {
             super(itemView);
             image = itemView.findViewById(R.id.avail_menu_image);
             name = itemView.findViewById(R.id.avail_menu_name);
-            promo = itemView.findViewById(R.id.avail_menu_promo);
             this.onMenuListener = onMenuListener;
 
             itemView.setOnClickListener(this);
@@ -91,11 +86,9 @@ public class AvailMenuAdapter extends RecyclerView.Adapter<AvailMenuAdapter.Avai
 
                 MenuItem unavailable = menu.add(Menu.NONE, 1, 1, "Set unavailable");
                 android.view.MenuItem delete = menu.add(Menu.NONE, 2, 2, "Delete item");
-                MenuItem promo = menu.add(Menu.NONE, 3, 3, "Add promo");
 
                 unavailable.setOnMenuItemClickListener(this);
                 delete.setOnMenuItemClickListener(this);
-                promo.setOnMenuItemClickListener(this);
             }
         }
 
@@ -109,9 +102,6 @@ public class AvailMenuAdapter extends RecyclerView.Adapter<AvailMenuAdapter.Avai
                 case 2:
                     onMenuListener.onDeleteClick(getAdapterPosition(), id);
                     return true;
-                case 3:
-                    onMenuListener.onPromoClick(getAdapterPosition(), id);
-                    return true;
             }
             return false;
         }
@@ -123,7 +113,6 @@ public class AvailMenuAdapter extends RecyclerView.Adapter<AvailMenuAdapter.Avai
 
         void onUnavailableClick(int position, String id);
         void onDeleteClick(int position, String id);
-        void onPromoClick(int position, String id);
     }
 
 

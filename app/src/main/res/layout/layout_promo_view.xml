@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    app:cardCornerRadius="6dp"
+    android:layout_margin="@dimen/defStartPadding">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_btn">
+
+        <TextView
+            android:id="@+id/l_promo_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/defFont"
+            android:layout_marginStart="@dimen/defStartPadding"
+            android:textStyle="bold"
+            android:text="name"/>
+
+        <TextView
+            android:id="@+id/l_promo_description"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:layout_below="@+id/l_promo_name"
+            android:layout_marginTop="0dp"
+            android:layout_marginStart="@dimen/defStartPadding"
+            android:text="desc"
+            />
+
+        <TextView
+            android:id="@+id/l_promo_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/l_promo_description"
+            android:layout_marginStart="@dimen/defStartPadding"
+            android:layout_marginTop="0dp"
+            android:gravity="center_vertical"
+            android:text="type" />
+
+        <TextView
+            android:id="@+id/l_promo_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/l_promo_type"
+            android:layout_marginStart="@dimen/defStartPadding"
+            android:layout_marginTop="0dp"
+            android:gravity="center_vertical"
+            android:text="time" />
+
+        <TextView
+            android:id="@+id/l_promo_time_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/l_promo_time"
+            android:layout_marginStart="@dimen/defStartPadding"
+            android:layout_marginTop="0dp"
+            android:gravity="center_vertical" />
+
+
+    </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>
