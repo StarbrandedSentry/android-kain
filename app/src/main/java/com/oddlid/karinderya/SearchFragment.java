@@ -28,6 +28,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.maps.android.clustering.ClusterManager;
+import com.oddlid.karinderya.models.ClusterMarker;
+import com.oddlid.karinderya.utils.ClusterManagerRenderer;
 
 import java.util.ArrayList;
 
@@ -43,6 +46,9 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
     private LatLngBounds mapBoundary;
     private GoogleMap map;
     private GeoPoint userPosition;
+    private ClusterManager clusterManager;
+    private ClusterManagerRenderer clusterManagerRenderer;
+    private ArrayList<ClusterMarker> clusterMarkers = new ArrayList<>();
 
     ArrayList<GeoPoint> userP;
     ArrayList<String> latitude;
@@ -106,6 +112,50 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
         );
 
         map.moveCamera(CameraUpdateFactory.newLatLngBounds(mapBoundary, 0));*/
+    }
+
+    private void addMapMarkers()
+    {
+        if(map != null)
+        {
+            if(clusterManager == null)
+            {
+                clusterManager = new ClusterManager<ClusterMarker>(getActivity().getApplicationContext(), map);
+            }
+
+            if(clusterManagerRenderer == null)
+            {
+                clusterManagerRenderer = new ClusterManagerRenderer(getActivity(), map, clusterManager);
+            }
+
+            DatabaseReference storeDb = FirebaseDatabase.getInstance().getReference("Stores");
+            storeDb.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot data : dataSnapshot.getChildren())
+                    {
+                        String snippet = "";
+                        LatLng lng = null;
+                        if(data.child("geo_location").exists())
+                        {
+                            snippet = data.child("location").getValue(String.class);
+                            lng =  new LatLng(data.child("geo_location").child("latitude").getValue(double.class), data.child("geo_location").child("longitude").getValue(double.class));
+                        }
+                        int avatar = R.drawable.empty_image;
+                        String sName = data.child("name").getValue(String.class);
+
+                        ClusterMarker clusterMarker = new ClusterMarker(lng, avatar, snippet, sName);
+                    }
+                    clusterManager.cluster();
+                    setCameraView();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
     }
 
     private void getStoreLocations()
