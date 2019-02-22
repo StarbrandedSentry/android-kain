@@ -1,10 +1,12 @@
 <resources>
     <string name="app_name">KAIN!</string>
+    <string name="google_map_api_key">AIzaSyBB8i_vhAu5iFIH_FDDs77lokDHiQEJZRY</string>
     <string name="title_activity_home">"hello"</string>
     <string name="nav_home">Home</string>
-    <string name="nav_search">Search</string>
+    <string name="nav_search">Map</string>
     <string name="nav_promos">Promos</string>
     <string name="nav_account">Account</string>
+    <string name="search_hint">Search</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="nav_manage">Manage</string>

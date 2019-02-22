@@ -4,22 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="wrap_content"
     app:cardCornerRadius="6dp"
-    android:layout_margin="@dimen/defStartPadding">
+    android:layout_margin="6dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/border_btn">
+        android:background="@color/colorAccent">
+
+        <TextView
+            android:id="@+id/l_promo_store"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/defStartPadding"
+            android:text="store"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/defFont"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/l_promo_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/defFont"
             android:layout_marginStart="@dimen/defStartPadding"
-            android:textStyle="bold"
-            android:text="name"/>
+            android:layout_below="@+id/l_promo_store"
+            android:text="name"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/defFont" />
 
         <TextView
             android:id="@+id/l_promo_description"

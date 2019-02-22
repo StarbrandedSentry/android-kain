@@ -1,15 +1,19 @@
 package com.oddlid.karinderya;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -27,12 +31,17 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -43,11 +52,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenuAdapter.OnMenuListener, AdapterView.OnItemSelectedListener, TimePickerDialog.OnTimeSetListener, PromoAdapter.OnMenuListener{
+public class ActiveStoreActivity extends AppCompatActivity implements AvailMenuAdapter.OnMenuListener, AdapterView.OnItemSelectedListener, TimePickerDialog.OnTimeSetListener, PromoAdapter.OnMenuListener {
     private static final int PICK_IMAGE_REQUEST = 1;
     private String type, time;
     String promoFrom, promoTo;
     String period;
+    FusedLocationProviderClient fusedLocationProviderClient;
 
     //control init
     Dialog imageZoom, promoMenu;
@@ -59,6 +69,7 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
     ImageButton closeDialog;
     Boolean flag;
     int promoTime, promoType;
+    Button storeLocation;
 
     private RecyclerView recyclerView, promoRecycler;
     private RecyclerView.Adapter recyclerAdapter, promoAdapter;
@@ -67,17 +78,18 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
     private Uri imageUri;
 
     //firebase init
-    StorageReference storageRef = FirebaseStorage.getInstance().getReference("Stores");
-    DatabaseReference itemDB = FirebaseDatabase.getInstance().getReference("Stores");
+    StorageReference storageRef;
+    DatabaseReference itemDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_active_store);
+        storageRef = FirebaseStorage.getInstance().getReference("Stores");
+        itemDB = FirebaseDatabase.getInstance().getReference("Stores");
         Intent intent = getIntent();
         //IF ACTIVITY WAS OPENED BY OWNER
-        if(intent.getExtras().getBoolean("byOwner"))
-        {
+        if (intent.getExtras().getBoolean("byOwner")) {
             //add to show
             Button addAvailable = findViewById(R.id.a_activeStore_addAvailable_btn);
             addAvailable.setVisibility(View.VISIBLE);
@@ -89,22 +101,25 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
             chooseImage.setVisibility(View.VISIBLE);
             Button createPromo = findViewById(R.id.a_activeStore_createPromo_btn);
             createPromo.setVisibility(View.VISIBLE);
+            storeLocation = findViewById(R.id.a_activeStore_map_location);
+            storeLocation.setVisibility(View.VISIBLE);
         }
         banner = findViewById(R.id.a_activeStore_banner);
 
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         initInfo();
         initAvailMenu();
         initPromo();
     }
 
-    private void initPromo()
-    {
+    private void initPromo() {
         final String id = getIntent().getStringExtra("id");
         DatabaseReference promoDB = FirebaseDatabase.getInstance().getReference("Promos");
         promoDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> store_ids = new ArrayList<>();
+                ArrayList<String> stores = new ArrayList<>();
                 ArrayList<String> names = new ArrayList<>();
                 ArrayList<String> descriptions = new ArrayList<>();
                 ArrayList<String> types = new ArrayList<>();
@@ -112,23 +127,28 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
                 ArrayList<String> time_frames = new ArrayList<>();
                 ArrayList<String> promo_ids = new ArrayList<>();
                 boolean key = getIntent().getExtras().getBoolean("byOwner");
-                for(DataSnapshot data : dataSnapshot.getChildren())
-                {
-                    if(data.child("store_id").getValue().equals(id))
-                    {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    if (data.child("store_id").getValue().equals(id)) {
                         promo_ids.add(data.getKey());
                         store_ids.add(data.child("store_id").getValue(String.class));
+                        stores.add(data.child("store_name").getValue(String.class));
                         names.add(data.child("name").getValue(String.class));
                         descriptions.add(data.child("description").getValue(String.class));
                         types.add(data.child("type").getValue(String.class));
                         times.add(data.child("time_type").getValue(String.class));
+                        if (!data.child("time_from").equals("") || !data.child("time_to").equals("")) {
+                            time_frames.add("");
+                            continue;
+                        }
                         time_frames.add(data.child("time_from").getValue(String.class) + " - " + data.child("time_to").getValue(String.class));
                     }
                 }
+
+                //store names
                 promoRecycler = findViewById(R.id.a_activeStore_promo_view);
                 promoRecycler.setHasFixedSize(true);
                 promoLayout = new LinearLayoutManager(getApplicationContext());
-                promoAdapter = new PromoAdapter(promo_ids, store_ids,names, descriptions, types, times, time_frames,
+                promoAdapter = new PromoAdapter(promo_ids, store_ids, stores, names, descriptions, types, times, time_frames,
                         ActiveStoreActivity.this, id, key);
 
                 promoRecycler.setLayoutManager(promoLayout);
@@ -142,21 +162,50 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
         });
     }
 
-    private void initInfo()
-    {
+    private void initInfo() {
         String id = getIntent().getStringExtra("id");
         DatabaseReference storeRef = FirebaseDatabase.getInstance().getReference().child("Stores").child(id);
         storeRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                final String bannerUrl = dataSnapshot.child("banner").getValue().toString();
                 location = findViewById(R.id.a_activeStore_location_text);
                 name = findViewById(R.id.a_activeStore_name_text);
                 name.setText(dataSnapshot.child("name").getValue().toString());
                 location.setText(dataSnapshot.child("location").getValue().toString());
-                banner = findViewById(R.id.a_activeStore_banner);
-                Picasso.get()
-                        .load(dataSnapshot.child("banner").getValue().toString())
-                        .into(banner);
+                if (dataSnapshot.child("geo_location").child("latitude").exists()) {
+                    String lat = dataSnapshot.child("geo_location").child("latitude").getValue().toString();
+                    String longi = dataSnapshot.child("geo_location").child("longitude").getValue().toString();
+                    storeLocation.setText(lat + ", " + longi);
+                }
+                if (dataSnapshot.child("banner").exists()) {
+                    banner = findViewById(R.id.a_activeStore_banner);
+                    Picasso.get()
+                            .load(dataSnapshot.child("banner").getValue().toString())
+                            .into(banner);
+                    banner.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            imageZoom = new Dialog(ActiveStoreActivity.this);
+                            imageZoom.setContentView(R.layout.dialog_image_view);
+
+                            closeDialog = imageZoom.findViewById(R.id.d_image_close_btn);
+                            closeDialog.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    imageZoom.dismiss();
+                                }
+                            });
+                            zoomed = imageZoom.findViewById(R.id.d_addPromo_image);
+                            Picasso.get()
+                                    .load(bannerUrl)
+                                    .into(zoomed);
+
+                            imageZoom.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            imageZoom.show();
+                        }
+                    });
+                }
             }
 
             @Override
@@ -166,8 +215,7 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
         });
     }
 
-    private void initAvailMenu()
-    {
+    private void initAvailMenu() {
         String id = getIntent().getStringExtra("id");
         DatabaseReference storeRef = FirebaseDatabase.getInstance().getReference().child("Stores").child(id)
                 .child("menu");
@@ -176,10 +224,8 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> names = new ArrayList<>();
                 ArrayList<String> images = new ArrayList<>();
-                for(DataSnapshot data : dataSnapshot.getChildren())
-                {
-                    if(data.child("availability").getValue().equals("available"))
-                    {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    if (data.child("availability").getValue().equals("available")) {
                         names.add(data.child("name").getValue(String.class));
                         images.add(data.child("image_url").getValue(String.class));
 
@@ -203,10 +249,8 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
         });
     }
 
-    public void uploadImage(View view)
-    {
-        if(imageUri == null)
-        {
+    public void uploadImage(View view) {
+        if (imageUri == null) {
             Snackbar.make(findViewById(android.R.id.content), "No picture picked!", Snackbar.LENGTH_LONG).show();
             return;
         }
@@ -227,7 +271,7 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
                             public void onSuccess(Void aVoid) {
                                 uploadProg.setVisibility(View.GONE);
 
-                                Toast.makeText(getApplicationContext(), "Banner changed!", Toast.LENGTH_LONG);
+                                Toast.makeText(ActiveStoreActivity.this, "Banner changed!", Toast.LENGTH_LONG).show();
                             }
                         });
                     }
@@ -237,8 +281,7 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
         });
     }
 
-    public void createPromo(View view)
-    {
+    public void createPromo(View view) {
         final String id = getIntent().getStringExtra("id");
         promoMenu = new Dialog(this);
         promoMenu.setContentView(R.layout.dialog_add_promo);
@@ -266,25 +309,26 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
         timeFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                promoTime = 1;
                 Bundle promo = new Bundle();
                 promo.putInt("picker_id", 1);
                 DialogFragment timePicker = new PromoTimeFragment();
                 timePicker.show(getSupportFragmentManager(), "Promo Time");
-                promoTime = 1;
             }
         });
         TextView timeTo = promoMenu.findViewById(R.id.d_addPromo_to);
         timeTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                promoTime = 2;
                 Bundle promo = new Bundle();
                 promo.putInt("picker_id", 1);
                 DialogFragment timePicker = new PromoTimeFragment();
                 timePicker.show(getSupportFragmentManager(), "Promo Time");
-                promoTime = 2;
             }
         });
 
+        //promo creation
         final Button create = promoMenu.findViewById(R.id.d_addPromo_btn);
         create.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -292,27 +336,41 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
                 create.setEnabled(false);
                 final DatabaseReference promoDB = FirebaseDatabase.getInstance().getReference("Promos");
                 //promo saving
-                TextView pName = promoMenu.findViewById(R.id.d_addPromo_promo_name);
-                TextView pDesc = promoMenu.findViewById(R.id.d_addPromo_promo_description);
+                final TextView pName = promoMenu.findViewById(R.id.d_addPromo_promo_name);
+                final TextView pDesc = promoMenu.findViewById(R.id.d_addPromo_promo_description);
                 final String mName = pName.getText().toString();
                 final String mDesc = pDesc.getText().toString();
                 final String itemID = random();
-                Promo promo;
-                if(time.equals("Certain Time"))
-                {
-                    promo = new Promo(id, mName, mDesc, type, time, promoFrom, promoTo);
-                }
-                else
-                {
-                    promo = new Promo(id, mName, mDesc, type, time);
-                }
-
-                promoDB.child(itemID).setValue(promo).addOnSuccessListener(new OnSuccessListener<Void>() {
+                DatabaseReference storeDB = FirebaseDatabase.getInstance().getReference("Stores").child(id);
+                storeDB.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(getApplicationContext(), "Promo created!", Toast.LENGTH_SHORT).show();
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String storeName = dataSnapshot.child("name").getValue(String.class);
+                        Promo promo;
+                        if (time.equals("Certain Time")) {
+                            promo = new Promo(id, storeName, mName, mDesc, type, time, promoFrom, promoTo);
+                        } else {
+                            promo = new Promo(id, storeName, mName, mDesc, type, time, "", "");
+                        }
+
+                        //Toast.makeText(ActiveStoreActivity.this, storeName, Toast.LENGTH_SHORT).show();
+                        promoDB.child(itemID).setValue(promo).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                pName.setText("");
+                                pDesc.setText("");
+
+                                Toast.makeText(ActiveStoreActivity.this, "Promo created!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
                     }
                 });
+
             }
         });
 
@@ -320,16 +378,14 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
         promoMenu.show();
     }
 
-    public void addAvailableItem(View view)
-    {
+    public void addAvailableItem(View view) {
         String id = getIntent().getStringExtra("id");
         Intent intent = new Intent(ActiveStoreActivity.this, AddItemActivity.class);
         intent.putExtra("id", id);
         startActivity(intent);
     }
 
-    public void chooseImage(View view)
-    {
+    public void chooseImage(View view) {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -340,9 +396,8 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
-            && data != null && data.getData() != null)
-        {
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
             imageUri = data.getData();
             Picasso.get()
                     .load(imageUri)
@@ -412,12 +467,10 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
     //@Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-        switch(parent.getCount())
-        {
+        switch (parent.getCount()) {
             case 2: //for promo time
                 time = parent.getItemAtPosition(position).toString();
-                if(position == 1)
-                {
+                if (position == 1) {
                     TextView toTitle = promoMenu.findViewById(R.id.d_addPromo_to_title);
                     TextView fromTitle = promoMenu.findViewById(R.id.d_addPromo_from_title);
                     TextView to = promoMenu.findViewById(R.id.d_addPromo_to);
@@ -427,9 +480,7 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
                     fromTitle.setVisibility(View.VISIBLE);
                     to.setVisibility(View.VISIBLE);
                     from.setVisibility(View.VISIBLE);
-                }
-                else if(position == 0)
-                {
+                } else if (position == 0) {
                     TextView toTitle = promoMenu.findViewById(R.id.d_addPromo_to_title);
                     TextView fromTitle = promoMenu.findViewById(R.id.d_addPromo_from_title);
                     TextView to = promoMenu.findViewById(R.id.d_addPromo_to);
@@ -455,23 +506,21 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
     //@Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         period = "am";
-        if(hourOfDay >= 13)
-        {
+        if (hourOfDay >= 13) {
             hourOfDay -= 12;
             period = "pm";
         }
 
-        switch (promoTime)
-        {
+        switch (promoTime) {
             case 1: //time from
-                promoFrom = hourOfDay + ":" + minute;
+                promoFrom = hourOfDay + ":" + String.format("%02d", minute);
                 TextView timeFrom = promoMenu.findViewById(R.id.d_addPromo_from);
                 timeFrom.setText(promoFrom + " " + period);
                 break;
             case 2: //time to
-                promoTo = hourOfDay + ":" + minute + " " + period;
+                promoTo = hourOfDay + ":" + String.format("%02d", minute);
                 TextView timeTo = promoMenu.findViewById(R.id.d_addPromo_to);
-                timeTo.setText(promoFrom + " " + period);
+                timeTo.setText(promoTo + " " + period);
                 break;
         }
     }
@@ -489,5 +538,34 @@ public class ActiveStoreActivity extends AppCompatActivity implements  AvailMenu
         return saltStr;
     }
 
+    public void setStoreMap(View view) {
+        final String id = getIntent().getStringExtra("id");
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                Location location = task.getResult();
+                final GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+
+                //Toast.makeText(getApplicationContext(), geoPoint.toString(), Toast.LENGTH_LONG).show();
+                DatabaseReference storeDb = FirebaseDatabase.getInstance().getReference("Stores").child(id).child("geo_location");
+                storeDb.setValue(geoPoint).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        storeLocation.setText(geoPoint.getLatitude() + ", " + geoPoint.getLongitude());
+                    }
+                });
+            }
+        });
+    }
 
 }

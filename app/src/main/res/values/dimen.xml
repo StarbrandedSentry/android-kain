@@ -12,6 +12,9 @@
     <dimen name="squareImage">110dp</dimen>
     <dimen name="bannerHeight">140dp</dimen>
     <dimen name="largeImage">300dp</dimen>
+    <dimen name="fragmentBottomMargin">60dp</dimen>
+    <dimen name="smallButtonHeight">24dp</dimen>
+    <dimen name="smallButtonWidth">160dp</dimen>
 
     <dimen name="defFont">15dp</dimen>
     <dimen name="smallFont">12dp</dimen>

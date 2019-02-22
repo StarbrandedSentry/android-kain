@@ -2,16 +2,19 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:scrollbarSize="@dimen/smallFont"
+    android:scrollbarStyle="outsideOverlay"
+    android:scrollbars="vertical"
+    tools:context=".ActiveStoreActivity"
     tools:layout_editor_absoluteX="0dp"
-    tools:layout_editor_absoluteY="0dp"
-    tools:context=".ActiveStoreActivity">
+    tools:layout_editor_absoluteY="0dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/f_acc_name_title4"
@@ -49,7 +52,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/f_acc_name_title4"
+            app:layout_constraintTop_toBottomOf="@+id/a_activeStore_map_location"
             app:layout_constraintVertical_bias="1.0" />
 
         <TextView
@@ -66,10 +69,10 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/f_acc_name_title5"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.293" />
 
         <TextView
             android:id="@+id/a_activeStore_location_text"
@@ -107,12 +110,12 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/bannerHeight"
             android:layout_marginBottom="8dp"
+            android:background="@drawable/border_btn"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
-            android:background="@drawable/border_btn"
             app:srcCompat="@android:drawable/sym_def_app_icon" />
 
         <Button
@@ -125,12 +128,12 @@
             android:background="@drawable/addcamera_icon"
             android:onClick="chooseImage"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/a_activeStore_cancelChangeBanner_btn"
+            app:layout_constraintBottom_toBottomOf="@+id/a_activeStore_banner"
             app:layout_constraintEnd_toEndOf="@+id/a_activeStore_banner"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/a_activeStore_banner"
             app:layout_constraintTop_toTopOf="@+id/a_activeStore_banner"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="0.865" />
 
         <Button
             android:id="@+id/a_activeStore_addAvailable_btn"
@@ -151,17 +154,19 @@
         <Button
             android:id="@+id/a_activeStore_changeBanner_btn"
             style="@style/FilledFlat"
-            android:layout_width="@dimen/buttonWidth"
-            android:layout_height="@dimen/buttonHeight"
+            android:layout_width="@dimen/smallButtonWidth"
+            android:layout_height="@dimen/smallButtonHeight"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/round_btn"
             android:onClick="uploadImage"
             android:text="change banner"
+            android:textSize="@dimen/smallFont"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/a_activeStore_banner"
             app:layout_constraintVertical_bias="0.0" />
@@ -169,18 +174,20 @@
         <Button
             android:id="@+id/a_activeStore_cancelChangeBanner_btn"
             style="@style/FilledFlat"
-            android:layout_width="@dimen/buttonWidth"
-            android:layout_height="@dimen/buttonHeight"
+            android:layout_width="@dimen/smallButtonWidth"
+            android:layout_height="@dimen/smallButtonHeight"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/round_btn"
             android:text="cancel change"
+            android:textSize="@dimen/smallFont"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/a_activeStore_changeBanner_btn"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/a_activeStore_changeBanner_btn"
+            app:layout_constraintTop_toBottomOf="@+id/a_activeStore_banner"
             app:layout_constraintVertical_bias="0.0" />
 
         <ProgressBar
@@ -203,8 +210,9 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/a_actStore_availMenu"
             android:layout_width="0dp"
-            android:layout_height="330dp"
-            android:background="@drawable/border_btn"
+            android:layout_height="250dp"
+            android:background="@drawable/text_title"
+            android:padding="@dimen/materialPadding"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -225,7 +233,7 @@
             android:onClick="createPromo"
             android:padding="@dimen/materialPadding"
             android:text="create promo"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.496"
@@ -235,16 +243,36 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/a_activeStore_promo_view"
+            android:padding="@dimen/materialPadding"
             android:layout_width="0dp"
-            android:layout_height="75dp"
+            android:layout_height="100dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/round_btn"
+            android:background="@drawable/text_title"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/a_activeStore_createPromo_btn" />
+
+        <Button
+            android:id="@+id/a_activeStore_map_location"
+            style="@style/TransparentFlat"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/smallButtonHeight"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/transparent_btn"
+            android:onClick="setStoreMap"
+            android:text="current map location"
+            android:textSize="@dimen/smallFont"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/f_acc_name_title4"
+            app:layout_constraintVertical_bias="0.0" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

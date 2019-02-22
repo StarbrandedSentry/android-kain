@@ -13,15 +13,16 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class PromoAdapter extends RecyclerView.Adapter<PromoAdapter.PromoHolder> {
-    ArrayList<String> promo_ids, store_ids, names, descriptions, types, times, time_frames;
+    ArrayList<String> promo_ids, store_ids, names, descriptions, types, times, time_frames, stores;
     OnMenuListener onMenuListener;
     String id;
     boolean key;
 
-    public PromoAdapter(ArrayList<String> promo_ids, ArrayList<String> store_ids, ArrayList<String> names, ArrayList<String> descriptions, ArrayList<String> types,
+    public PromoAdapter(ArrayList<String> promo_ids, ArrayList<String> store_ids, ArrayList<String> stores, ArrayList<String> names, ArrayList<String> descriptions, ArrayList<String> types,
         ArrayList<String> times, ArrayList<String> time_frames, OnMenuListener onMenuListener, String id, boolean key)
     {
         this.store_ids = store_ids;
+        this.stores = stores;
         this.names = names;
         this.descriptions = descriptions;
         this.types = types;
@@ -47,6 +48,7 @@ public class PromoAdapter extends RecyclerView.Adapter<PromoAdapter.PromoHolder>
         promoHolder.type.setText(types.get(i));
         promoHolder.time_type.setText(times.get(i));
         promoHolder.time_frame.setText(time_frames.get(i));
+        promoHolder.store.setText(stores.get(i));
 
     }
 
@@ -56,7 +58,7 @@ public class PromoAdapter extends RecyclerView.Adapter<PromoAdapter.PromoHolder>
     }
 
     public class PromoHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
-        public TextView name, description, type, time_type, time_frame;
+        public TextView name, description, type, time_type, time_frame, store;
         public PromoHolder(@NonNull View itemView, OnMenuListener onMenuListener) {
             super(itemView);
             name = itemView.findViewById(R.id.l_promo_name);
@@ -64,6 +66,7 @@ public class PromoAdapter extends RecyclerView.Adapter<PromoAdapter.PromoHolder>
             type = itemView.findViewById(R.id.l_promo_type);
             time_type = itemView.findViewById(R.id.l_promo_time);
             time_frame = itemView.findViewById(R.id.l_promo_time_frame);
+            store = itemView.findViewById(R.id.l_promo_store);
 
             itemView.setOnCreateContextMenuListener(this);
         }

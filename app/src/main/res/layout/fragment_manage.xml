@@ -18,6 +18,7 @@
             android:layout_height="200dp"
             android:layout_marginBottom="248dp"
             android:background="@drawable/round_btn"
+            android:padding="@dimen/materialPadding"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -60,6 +61,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/f_manage_pendingRecycler"
+            android:padding="@dimen/materialPadding"
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:layout_marginTop="8dp"

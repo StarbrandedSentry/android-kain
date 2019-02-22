@@ -4,18 +4,20 @@ public class Promo {
     public Promo()
     {}
 
-    public Promo(String store_id, String name, String description, String type, String time_type)
+    public Promo(String store_id,String store_name , String name, String description, String type, String time_type)
     {
         this.store_id = store_id;
+        this.store_name = store_name;
         this.name = name;
         this.description = description;
         this.type = type;
         this.time_type = time_type;
     }
 
-    public Promo(String store_id,String name, String description, String type, String time_type, String time_from, String time_to)
+    public Promo(String store_id,String store_name ,String name, String description, String type, String time_type, String time_from, String time_to)
     {
         this.store_id = store_id;
+        this.store_name = store_name;
         this.name = name;
         this.description = description;
         this.type = type;
@@ -24,8 +26,16 @@ public class Promo {
         this.time_to = time_to;
     }
 
-    String store_id;
+    String store_id, store_name;
     String name, description, type, time_type, time_from, time_to;
+
+    public String getStore_name() {
+        return store_name;
+    }
+
+    public void setStore_name(String store_name) {
+        this.store_name = store_name;
+    }
 
     public String getStore_id() {
         return store_id;

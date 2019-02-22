@@ -12,17 +12,20 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder> {
-    private ArrayList<String> names;
-    private ArrayList<String> banners;
-    private ArrayList<String> locations;
+public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder>{
+    private ArrayList<String> names, namesFull;
+    private ArrayList<String> banners, bannersFull;
+    private ArrayList<String> locations, locationsFull;
     private OnCardListener onCardListener;
 
     public HomeAdapter(ArrayList<String> names, ArrayList<String> locations, ArrayList<String> banners, OnCardListener onCardListener)
     {
         this.names = names;
+        this.namesFull = new ArrayList<>(names);
         this.locations = locations;
+        this.locationsFull = new ArrayList<>(locations);
         this.banners = banners;
+        this.bannersFull = new ArrayList<>(banners);
         this.onCardListener = onCardListener;
     }
 
@@ -68,10 +71,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         public void onClick(View v) {
             onCardListener.onCardClick(getAdapterPosition());
         }
+
     }
 
     public interface OnCardListener
     {
         void onCardClick(int position);
     }
+
+
 }
