@@ -146,6 +146,7 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
 
                         ClusterMarker clusterMarker = new ClusterMarker(lng, avatar, snippet, sName);
                     }
+
                     clusterManager.cluster();
                     setCameraView();
                 }
@@ -201,7 +202,8 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
         }
         googleMap.setMyLocationEnabled(true);
         map = googleMap;
-        setCameraView();
+        //setCameraView();
+        addMapMarkers();
     }
 
 
