@@ -184,7 +184,7 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
         registerBtn.setEnabled(false);
 
         //check if the karinderya is 24 hours
-        editName = findViewById(R.id.a_register_street_address);
+        editName = findViewById(R.id.editStoreName);
         editLocation = findViewById(R.id.a_register_street_address);
         editCity = findViewById(R.id.a_register_city);
         editContactNumber = findViewById(R.id.a_register_contact_number);
@@ -452,13 +452,13 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
         switch (timeType) {
             case 1: //time from
                 promoFrom = hourOfDay + ":" + String.format("%02d", minute);
-                TextView timeFrom = findViewById(R.id.d_addPromo_from);
+                TextView timeFrom = findViewById(R.id.a_register_from_time);
                 timeFrom.setText(promoFrom + " " + period);
                 mTimeFrom = promoFrom + " " + period;
                 break;
             case 2: //time to
                 promoTo = hourOfDay + ":" + String.format("%02d", minute);
-                TextView timeTo = findViewById(R.id.d_addPromo_to);
+                TextView timeTo = findViewById(R.id.a_register_to_time);
                 timeTo.setText(promoTo + " " + period);
                 mTimeTo = promoTo + " " + period;
                 break;

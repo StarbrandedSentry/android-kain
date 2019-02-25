@@ -93,7 +93,7 @@ public class AdminActivity extends AppCompatActivity implements RequestAdapter.O
     }
 
     @Override
-    public void onNoteClick(final int position) {
+    public void onNoteClick(int position, final String id) {
         DatabaseReference requestDB = FirebaseDatabase.getInstance().getReference().child("Stores");
         requestDB.addValueEventListener(new ValueEventListener() {
             @Override
@@ -106,7 +106,7 @@ public class AdminActivity extends AppCompatActivity implements RequestAdapter.O
 
                 //new intents
                 Intent intent = new Intent(getApplicationContext(), ActRequestActivity.class);
-                intent.putExtra("propID", mRequestID.get(position));
+                intent.putExtra("propID", id);
                 startActivity(intent);
 
             }
@@ -117,6 +117,4 @@ public class AdminActivity extends AppCompatActivity implements RequestAdapter.O
             }
         });
     }
-
-
 }

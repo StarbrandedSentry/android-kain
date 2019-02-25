@@ -5,12 +5,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/active_store_layout"
     app:cardCornerRadius="4dp"
-    android:layout_margin="4dp">
+    android:layout_margin="@dimen/def_corner_radius">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="6dp">
+        android:paddingTop="@dimen/materialPadding"
+        android:paddingBottom="@dimen/materialPadding"
+        android:background="@drawable/border_btn">
 
         <TextView
             android:id="@+id/active_store_id"

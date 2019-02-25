@@ -37,7 +37,7 @@ public class HomeFragment extends Fragment implements HomeAdapter.OnCardListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //initStores();
+        initStores();
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
@@ -52,22 +52,30 @@ public class HomeFragment extends Fragment implements HomeAdapter.OnCardListener
                 ArrayList<String> names = new ArrayList<>();
                 ArrayList<String> locations = new ArrayList<>();
                 ArrayList<String> banners = new ArrayList<>();
+                ArrayList<String> ratings = new ArrayList<>();
                 for(DataSnapshot data : dataSnapshot.getChildren())
                 {
                     if(data.child("status").getValue().equals("accepted"))
                     {
-                        locations.add(data.child("location").getValue(String.class));
+                        locations.add(data.child("street_address").getValue(String.class) + ", " + data.child("city").getValue(String.class));
                         names.add(data.child("name").getValue(String.class));
                         banners.add(data.child("banner").getValue(String.class));
+                        if(!data.child("rating").exists())
+                        {
+                            ratings.add("No rating");
+                            continue;
+                        }
+                        ratings.add(data.child("rating").getValue().toString());
                     }
-                    recyclerView = getView().findViewById(R.id.f_home_recycler);
-                    recyclerView.setHasFixedSize(true);
-                    layoutManager = new LinearLayoutManager(getContext());
-                    recyclerAdapter = new HomeAdapter(names, locations, banners, HomeFragment.this);
 
-                    recyclerView.setLayoutManager(layoutManager);
-                    recyclerView.setAdapter(recyclerAdapter);
                 }
+                recyclerView = getView().findViewById(R.id.f_home_recycler);
+                recyclerView.setHasFixedSize(true);
+                layoutManager = new LinearLayoutManager(getContext());
+                recyclerAdapter = new HomeAdapter(names, locations, banners, ratings, HomeFragment.this);
+
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(recyclerAdapter);
             }
 
             @Override

@@ -101,45 +101,6 @@ public class ManageFragment extends Fragment implements RequestAdapter.OnNoteLis
         snack.show();
     }
 
-    @Override
-    public void onNoteClick(final int position) {
-        DatabaseReference requestDB = FirebaseDatabase.getInstance().getReference().child("Stores");
-        requestDB.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ArrayList<String> mRequestID = new ArrayList<>();
-                for(DataSnapshot data : dataSnapshot.getChildren())
-                {
-                    mRequestID.add(data.getKey());
-                }
-                final String id = mRequestID.get(position);
-                AlertDialog.Builder remove = new AlertDialog.Builder(getContext());
-                remove.setMessage("Do you want to remove your registration?")
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Stores").child(id);
-                                Map<String, Object> statusMap = new HashMap<>();
-                                statusMap.put("status", "removed");
-                                dbRef.updateChildren(statusMap);
-                            }
-                        });
-                remove.show();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
 
     private void initActiveStores()
     {
@@ -154,7 +115,7 @@ public class ManageFragment extends Fragment implements RequestAdapter.OnNoteLis
                 {
                     if(data.child("status").getValue().equals("accepted"))
                     {
-                        locations.add(data.child("location").getValue(String.class));
+                        locations.add(data.child("street_address").getValue(String.class) + ", " + data.child("city").getValue(String.class));
                         names.add(data.child("name").getValue(String.class));
                         ids.add(data.getKey());
                     }
@@ -192,6 +153,45 @@ public class ManageFragment extends Fragment implements RequestAdapter.OnNoteLis
                 intent.putExtra("id", id);
                 intent.putExtra("byOwner", true);
                 startActivity(intent);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onNoteClick(final int position, String id) {
+        DatabaseReference requestDB = FirebaseDatabase.getInstance().getReference().child("Stores");
+        requestDB.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<String> mRequestID = new ArrayList<>();
+                for(DataSnapshot data : dataSnapshot.getChildren())
+                {
+                    mRequestID.add(data.getKey());
+                }
+                final String id = mRequestID.get(position);
+                AlertDialog.Builder remove = new AlertDialog.Builder(getContext());
+                remove.setMessage("Do you want to remove your registration?")
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Stores").child(id);
+                                Map<String, Object> statusMap = new HashMap<>();
+                                statusMap.put("status", "removed");
+                                dbRef.updateChildren(statusMap);
+                            }
+                        });
+                remove.show();
             }
 
             @Override

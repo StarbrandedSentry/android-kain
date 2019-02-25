@@ -16,15 +16,17 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     private ArrayList<String> names, namesFull;
     private ArrayList<String> banners, bannersFull;
     private ArrayList<String> locations, locationsFull;
+    private ArrayList<String> ratings;
     private OnCardListener onCardListener;
 
-    public HomeAdapter(ArrayList<String> names, ArrayList<String> locations, ArrayList<String> banners, OnCardListener onCardListener)
+    public HomeAdapter(ArrayList<String> names, ArrayList<String> locations, ArrayList<String> banners, ArrayList<String> ratings, OnCardListener onCardListener)
     {
         this.names = names;
         this.namesFull = new ArrayList<>(names);
         this.locations = locations;
         this.locationsFull = new ArrayList<>(locations);
         this.banners = banners;
+        this.ratings = ratings;
         this.bannersFull = new ArrayList<>(banners);
         this.onCardListener = onCardListener;
     }
@@ -40,9 +42,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
     public void onBindViewHolder(@NonNull HomeViewHolder homeViewHolder, int i) {
             homeViewHolder.name.setText(names.get(i));
             homeViewHolder.location.setText(locations.get(i));
+            homeViewHolder.rating.setText(ratings.get(i));
 
             Picasso.get()
                     .load(banners.get(i))
+                    .fit().centerCrop()
                     .into(homeViewHolder.banner);
     }
 
@@ -56,12 +60,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeViewHolder
         public TextView name;
         public TextView location;
         public ImageView banner;
+        public TextView rating;
         OnCardListener onCardListener;
         public HomeViewHolder(@NonNull View itemView, OnCardListener onCardListener) {
             super(itemView);
             name = itemView.findViewById(R.id.hv_name_text);
             location = itemView.findViewById(R.id.hv_location_text);
             banner = itemView.findViewById(R.id.hv_banner_view);
+            rating = itemView.findViewById(R.id.hv_rating);
             this.onCardListener = onCardListener;
 
             itemView.setOnClickListener(this);

@@ -3,13 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="wrap_content"
-    >
+    android:layout_margin="@dimen/default_gap">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/round_btn"
-        android:layout_margin="5dp"
-        android:paddingBottom="@dimen/defStartPadding">
+        android:background="@drawable/border_btn"
+        android:paddingBottom="15dp">
 
 
         <ImageView
@@ -17,7 +16,9 @@
             android:layout_width="match_parent"
             android:layout_height="130dp"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="@dimen/materialPadding"
+            android:layout_marginTop="1dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginEnd="1dp"
             android:layout_marginBottom="@dimen/materialPadding" />
 
         <TextView
@@ -30,7 +31,7 @@
             android:gravity="center_vertical"
             android:paddingStart="@dimen/defStartPadding"
             android:text="TextView"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/colorBlack"
             android:textStyle="bold" />
 
         <TextView
@@ -43,6 +44,30 @@
             android:gravity="center_vertical"
             android:paddingStart="@dimen/defStartPadding"
             android:text="TextView"
-            android:textColor="@color/colorWhite" />
+            android:textColor="@color/colorBlack" />
+
+        <TextView
+            android:id="@+id/hv_rating"
+            android:layout_width="341dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/hv_location_text"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@+id/hv_rating_icon"
+            android:gravity="center_vertical"
+
+            android:text="No ratings"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/defFont" />
+
+        <ImageView
+            android:id="@+id/hv_rating_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/hv_location_text"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="2dp"
+            app:srcCompat="@drawable/rating_black_icon" />
     </RelativeLayout>
 </android.support.v7.widget.CardView>

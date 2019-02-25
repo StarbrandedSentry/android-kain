@@ -13,11 +13,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
@@ -45,6 +45,10 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.oddlid.karinderya.fragments.StoreDetailsFragment;
+import com.oddlid.karinderya.fragments.StoreMenuFragment;
+import com.oddlid.karinderya.fragments.StorePromosFragment;
+import com.oddlid.karinderya.utils.SectionsPageAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -70,6 +74,8 @@ public class ActiveStoreActivity extends AppCompatActivity implements AvailMenuA
     Boolean flag;
     int promoTime, promoType;
     Button storeLocation;
+    private SectionsPageAdapter sectionsPageAdapter;
+    private ViewPager viewPager;
 
     private RecyclerView recyclerView, promoRecycler;
     private RecyclerView.Adapter recyclerAdapter, promoAdapter;
@@ -91,10 +97,17 @@ public class ActiveStoreActivity extends AppCompatActivity implements AvailMenuA
         old = getIntent();
         Intent intent = getIntent();
 
+        sectionsPageAdapter = new SectionsPageAdapter(getSupportFragmentManager());
+        viewPager = findViewById(R.id.a_active_store_container);
+        setUpViewPager(viewPager);
+
+        TabLayout tabLayout = findViewById(R.id.a_active_store_tab);
+        tabLayout.setupWithViewPager(viewPager);
+
         //IF ACTIVITY WAS OPENED BY OWNER
         if (intent.getExtras().getBoolean("byOwner")) {
             //add to show
-            Button addAvailable = findViewById(R.id.a_activeStore_addAvailable_btn);
+            /*Button addAvailable = findViewById(R.id.a_activeStore_addAvailable_btn);
             addAvailable.setVisibility(View.VISIBLE);
             Button changeBanner = findViewById(R.id.a_activeStore_changeBanner_btn);
             changeBanner.setVisibility(View.VISIBLE);
@@ -105,18 +118,18 @@ public class ActiveStoreActivity extends AppCompatActivity implements AvailMenuA
             Button createPromo = findViewById(R.id.a_activeStore_createPromo_btn);
             createPromo.setVisibility(View.VISIBLE);
             storeLocation = findViewById(R.id.a_activeStore_map_location);
-            storeLocation.setVisibility(View.VISIBLE);
+            storeLocation.setVisibility(View.VISIBLE);*/
         }
         banner = findViewById(R.id.a_activeStore_banner);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        initInfo();
-        initAvailMenu();
-        initPromo();
+        //initInfo();
+        //initAvailMenu();
+        //initPromo();
     }
 
     private void initPromo() {
-        final String id = getIntent().getStringExtra("id");
+        /*final String id = getIntent().getStringExtra("id");
         DatabaseReference promoDB = FirebaseDatabase.getInstance().getReference("Promos");
         promoDB.addValueEventListener(new ValueEventListener() {
             @Override
@@ -162,11 +175,11 @@ public class ActiveStoreActivity extends AppCompatActivity implements AvailMenuA
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        });*/
     }
 
     private void initInfo() {
-        String id = getIntent().getStringExtra("id");
+        /*String id = getIntent().getStringExtra("id");
         DatabaseReference storeRef = FirebaseDatabase.getInstance().getReference().child("Stores").child(id);
         storeRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -215,11 +228,11 @@ public class ActiveStoreActivity extends AppCompatActivity implements AvailMenuA
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        });*/
     }
 
     private void initAvailMenu() {
-        String id = getIntent().getStringExtra("id");
+        /*String id = getIntent().getStringExtra("id");
         DatabaseReference storeRef = FirebaseDatabase.getInstance().getReference().child("Stores").child(id)
                 .child("menu");
         storeRef.addValueEventListener(new ValueEventListener() {
@@ -249,7 +262,7 @@ public class ActiveStoreActivity extends AppCompatActivity implements AvailMenuA
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        });*/
     }
 
     public void uploadImage(View view) {
@@ -571,4 +584,13 @@ public class ActiveStoreActivity extends AppCompatActivity implements AvailMenuA
         });
     }
 
+    //setting up tabbing system
+    private void setUpViewPager(ViewPager viewPager)
+    {
+        SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
+        adapter.addFragment(new StoreDetailsFragment(), "Details");
+        adapter.addFragment(new StoreMenuFragment(), "Menu");
+        adapter.addFragment(new StorePromosFragment(), "Promos");
+        viewPager.setAdapter(adapter);
+    }
 }
