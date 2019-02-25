@@ -80,6 +80,7 @@ public class ActiveStoreActivity extends AppCompatActivity implements AvailMenuA
     //firebase init
     StorageReference storageRef;
     DatabaseReference itemDB;
+    Intent old;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +88,9 @@ public class ActiveStoreActivity extends AppCompatActivity implements AvailMenuA
         setContentView(R.layout.activity_active_store);
         storageRef = FirebaseStorage.getInstance().getReference("Stores");
         itemDB = FirebaseDatabase.getInstance().getReference("Stores");
+        old = getIntent();
         Intent intent = getIntent();
+
         //IF ACTIVITY WAS OPENED BY OWNER
         if (intent.getExtras().getBoolean("byOwner")) {
             //add to show
@@ -173,7 +176,7 @@ public class ActiveStoreActivity extends AppCompatActivity implements AvailMenuA
                 name = findViewById(R.id.a_activeStore_name_text);
                 name.setText(dataSnapshot.child("name").getValue().toString());
                 location.setText(dataSnapshot.child("location").getValue().toString());
-                if (dataSnapshot.child("geo_location").child("latitude").exists()) {
+                if (dataSnapshot.child("geo_location").child("latitude").exists() && old.getExtras().getBoolean("byOwner")) {
                     String lat = dataSnapshot.child("geo_location").child("latitude").getValue().toString();
                     String longi = dataSnapshot.child("geo_location").child("longitude").getValue().toString();
                     storeLocation.setText(lat + ", " + longi);

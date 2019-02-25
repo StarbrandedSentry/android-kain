@@ -75,7 +75,7 @@ public class AvailMenuAdapter extends RecyclerView.Adapter<AvailMenuAdapter.Avai
 
         @Override
         public void onClick(View v) {
-            onMenuListener.onMenuClick(getAdapterPosition(), url);
+            onMenuListener.onMenuClick(getAdapterPosition(), images.get(getAdapterPosition()));
         }
 
         @Override

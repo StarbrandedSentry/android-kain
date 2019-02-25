@@ -92,9 +92,6 @@ public class ActRequestActivity extends AppCompatActivity {
                 id.setText("Request ID: " + dataSnapshot.getKey());
                 name.setText("Karinderya Name: " + request.getName());
                 date.setText("Date Made: " + request.getDate_made());
-                location.setText("Location: " + request.getLocation());
-
-
 
             }
 

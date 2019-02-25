@@ -202,8 +202,8 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
         }
         googleMap.setMyLocationEnabled(true);
         map = googleMap;
-        //setCameraView();
-        addMapMarkers();
+        setCameraView();
+        //addMapMarkers();
     }
 
 

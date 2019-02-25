@@ -21,4 +21,9 @@
         <item>All day</item>
         <item>Certain Time</item>
     </string-array>
+
+    <string-array name="operating_hours">
+        <item>24 hours</item>
+        <item>Certain Time</item>
+    </string-array>
 </resources>

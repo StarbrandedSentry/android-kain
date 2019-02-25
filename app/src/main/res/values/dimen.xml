@@ -15,6 +15,7 @@
     <dimen name="fragmentBottomMargin">60dp</dimen>
     <dimen name="smallButtonHeight">24dp</dimen>
     <dimen name="smallButtonWidth">160dp</dimen>
+    <dimen name="def_corner_radius">3dp</dimen>
 
     <dimen name="defFont">15dp</dimen>
     <dimen name="smallFont">12dp</dimen>
