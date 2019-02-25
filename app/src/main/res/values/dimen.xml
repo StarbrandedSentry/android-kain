@@ -19,6 +19,7 @@
 
     <dimen name="defFont">15dp</dimen>
     <dimen name="smallFont">12dp</dimen>
+    <dimen name="medFont">22dp</dimen>
     <dimen name="largeFont">30dp</dimen>
 
     <dimen name="marketHeight">5px</dimen>

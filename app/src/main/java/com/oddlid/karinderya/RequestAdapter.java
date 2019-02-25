@@ -16,7 +16,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
     private ArrayList<String> propID;
     private OnNoteListener mOnNoteListener;
 
-    public static class RequestViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+    public class RequestViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         public TextView requestIDView;
         public TextView storeNameView;
@@ -37,7 +37,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
 
         @Override
         public void onClick(View v) {
-            onNoteListener.onNoteClick(getAdapterPosition());
+            onNoteListener.onNoteClick(getAdapterPosition(), propID.get(getAdapterPosition()));
         }
     }
 
@@ -73,7 +73,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.RequestV
     //interface for onclick
     public interface OnNoteListener
     {
-        void onNoteClick(int position);
+        void onNoteClick(int position, String id);
     }
 }
 

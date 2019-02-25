@@ -6,36 +6,57 @@
     android:layout_height="match_parent"
     tools:context=".AdminActivity">
 
-    <TextView
-        android:id="@+id/pendingText"
-        style="@style/TransparentInfo"
-        android:layout_width="@dimen/infiniteWidth"
-        android:layout_height="53dp"
-        android:layout_marginTop="16dp"
-        android:text="Pending Registrations"
-        android:textColor="@color/colorBlack"
-        android:textSize="@dimen/defFont"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/pendingRecycler"
+        android:layout_width="0dp"
+        android:layout_height="606dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/border_btn"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/materialPadding"
+        android:paddingTop="@dimen/materialPadding"
+        android:paddingEnd="@dimen/materialPadding"
+        android:paddingBottom="@dimen/materialPadding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="107dp"
+        android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/pendingRecycler"
-        android:layout_width="0dp"
-        android:clipToPadding="false"
-        android:paddingTop="@dimen/materialPadding"
-        android:paddingStart="@dimen/materialPadding"
-        android:paddingEnd="@dimen/materialPadding"
-        android:paddingBottom="@dimen/materialPadding"
-        android:background="@drawable/round_btn"
-        android:layout_height="240dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pendingText"
-        app:layout_constraintVertical_bias="0.0" />
+        <TextView
+            android:id="@+id/pendingText"
+            style="@style/TransparentInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Pending Registrations"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/defFont"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
+    </android.support.constraint.ConstraintLayout>
+
 </android.support.constraint.ConstraintLayout>

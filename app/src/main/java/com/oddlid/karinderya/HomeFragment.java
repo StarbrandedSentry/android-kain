@@ -37,7 +37,7 @@ public class HomeFragment extends Fragment implements HomeAdapter.OnCardListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        initStores();
+        //initStores();
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);

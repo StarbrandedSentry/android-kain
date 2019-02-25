@@ -6,12 +6,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -23,9 +20,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,8 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import java.io.ByteArrayOutputStream;
+import com.squareup.picasso.Picasso;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -50,6 +47,8 @@ public class AccountFragment extends Fragment {
     //pls allow sending data
     private static final int REQUEST_EXTERNAL_STORAGE = 1333;
     public static final int REQUEST_CODE=1531;
+    private boolean changingPhoto;
+    private Uri imageUri;
 
     //Other initializations
     String name, email, uid;
@@ -60,7 +59,10 @@ public class AccountFragment extends Fragment {
     Button registerBtn;
     Button openAdmin, uploadBtn;
     ImageView profileView;
-    Button changeImageBtn;
+    Button changeImageBtn, cancelUpload;
+    String userID;
+    TextView nameView, userLevelView, emailView, karinderyaCountView;
+    ProgressBar uploadProgress;
 
     //firebase initializations
     FirebaseAuth fbAuth;
@@ -84,27 +86,42 @@ public class AccountFragment extends Fragment {
         fbUser = fbAuth.getCurrentUser();
         fbDatabase = FirebaseDatabase.getInstance();
         final String uid = fbAuth.getCurrentUser().getUid();
-        String userID = fbAuth.getCurrentUser().getUid();
+        userID = fbAuth.getCurrentUser().getUid();
+        uploadProgress = view.findViewById(R.id.f_account_upload_progress);
 
-        storeRef = FirebaseStorage.getInstance().getReference().child("Users").child(userID).child("profile_picture");
-        profileView = (ImageView) view.findViewById(R.id.profileView);
-        storeRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+        //Setting up profile picture
+        DatabaseReference userDB = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+        userDB.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onSuccess(byte[] bytes) {
-                if(bytes != null)
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child("profile_picture").exists())
                 {
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    profileView.setImageBitmap(bitmap);
+                    ImageView image = view.findViewById(R.id.profileView);
+                    Picasso.get()
+                            .load(dataSnapshot.child("profile_picture").getValue().toString())
+                            .fit().centerCrop()
+                            .into(image);
                 }
-                //DESTROY THE PROGRESS BARS
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
+
         //getting pictures
-        changeImageBtn = (Button) view.findViewById(R.id.changeImageBtn);
+        changeImageBtn = view.findViewById(R.id.changeImageBtn);
         changeImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                handlePermission();
+                if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+                {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1533);
+                    return;
+                }
+
+                selectImage();
             }
         });
         //end of that hell
@@ -164,37 +181,109 @@ public class AccountFragment extends Fragment {
             }
         });
 
-        //uploading picture
-        uploadBtn = (Button) view.findViewById(R.id.registerBtn);
+        //Uploading image logic
+        uploadBtn = view.findViewById(R.id.f_account_change_photo);
         uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                storeRef = FirebaseStorage.getInstance().getReference().child("Users").child(uid).child("profile_picture");
-                profileView.setDrawingCacheEnabled(true);
-                profileView.buildDrawingCache();
-                Bitmap bitmap = ((BitmapDrawable) profileView.getDrawable()).getBitmap();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                byte[] data = baos.toByteArray();
-
-                UploadTask uploadTask = storeRef.putBytes(data);
-                uploadTask.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        snackbarMessage(view, "Something went wrong! Try again");
-                    }
-                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                //logic for uploading photo
+                if(imageUri == null)
+                {
+                    return;
+                }
+                cancelUpload = view.findViewById(R.id.f_account_cancel_change_photo);
+                cancelUpload.setVisibility(View.GONE);
+                uploadProgress.setVisibility(View.VISIBLE);
+                final StorageReference userStore = FirebaseStorage.getInstance().getReference("Users").child(userID).child("profile_picture");
+                userStore.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        userStore.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                DatabaseReference userDb = FirebaseDatabase.getInstance().getReference("Users").child(userID).child("profile_picture");
+                                userDb.setValue(uri.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(getContext(), "Profile Picture saved!", Toast.LENGTH_SHORT).show();
+                                        uploadBtn.setVisibility(View.GONE);
+                                        uploadProgress.setVisibility(View.GONE);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+
+            }
+        });
+
+        //cancel upload logic
+        cancelUpload = view.findViewById(R.id.f_account_cancel_change_photo);
+        cancelUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference userDB = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+                userDB.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.child("profile_picture").exists())
+                        {
+                            ImageView image = view.findViewById(R.id.profileView);
+                            Picasso.get()
+                                    .load(dataSnapshot.child("profile_picture").getValue().toString())
+                                    .fit().centerCrop()
+                                    .into(image);
+                        }
+                        else
+                        {
+                            DatabaseReference adminDb = FirebaseDatabase.getInstance().getReference().child("Admin");
+                            adminDb.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    ImageView image = view.findViewById(R.id.profileView);
+                                    Picasso.get()
+                                            .load(dataSnapshot.child("default_profile").getValue().toString())
+                                            .fit().centerCrop()
+                                            .into(image);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                        cancelUpload.setVisibility(View.GONE);
+                        uploadBtn = view.findViewById(R.id.f_account_change_photo);
                         uploadBtn.setVisibility(View.GONE);
-                        snackbarMessage(view, "Profile picture updated!");
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
                     }
                 });
             }
         });
-        //done
 
         return view;
+    }
+
+
+    private void selectImage()
+    {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        Intent chooserIntent = Intent.createChooser(intent, "Select Image");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+
+        startActivityForResult(chooserIntent, 0533);
     }
 
     private void snackbarMessage(View v, String message)
@@ -203,7 +292,7 @@ public class AccountFragment extends Fragment {
         snack.show();
     }
 
-    //Set texts
+    //Set account details
     private void setDetails()
     {
         //Settings names and stuffs
@@ -212,24 +301,31 @@ public class AccountFragment extends Fragment {
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                TextView nameView = getView().findViewById(R.id.nameText);
-                TextView emailView = getView().findViewById(R.id.emailText);
-                TextView userlevelView = getView().findViewById(R.id.userlevelText);
+                userLevelView = getView().findViewById(R.id.f_account_user_level);
+                nameView = getView().findViewById(R.id.f_account_name);
+                emailView = getView().findViewById(R.id.f_account_email);
+                karinderyaCountView = getView().findViewById(R.id.f_account_karinderya_count);
                 User user = dataSnapshot.getValue(User.class);
                 //setting names
                 nameView.setText(user.getName());
                 emailView.setText(fbUser.getEmail());
                 if(user.getUser_level() == 1)
                 {
-                    userlevelView.setText("Normal");
+                    userLevelView.setText("Normal");
                 }
                 else if(user.getUser_level() == 2)
                 {
-                    userlevelView.setText("Owner");
+                    userLevelView.setText("Owner");
                 }
                 else if(user.getUser_level() == 3) {
-                    userlevelView.setText("Admin");
+                    userLevelView.setText("Admin");
                 }
+
+                if(dataSnapshot.child("store_count").exists())
+                {
+                    karinderyaCountView.setText(dataSnapshot.child("store_count").getValue().toString());
+                }
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -263,33 +359,14 @@ public class AccountFragment extends Fragment {
         }
     };
 
-    //GETTING IMAGE FROM GALLERY
-    private void handlePermission()
-    {
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
-        {
-            openImageChooser();
-        }
-        else
-        {
-            if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-            {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_EXTERNAL_STORAGE);
-            }
-            else
-            {
-                openImageChooser();
-            }
-        }
-    }
     public void onRequestPermissionResult(int requestCode, String permissions[], int[] grantResults)
     {
         switch(requestCode)
         {
-            case REQUEST_EXTERNAL_STORAGE:{
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            case 1533:{
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 {
-                    openImageChooser();
+                    selectImage();
                 }
                 else
                 {
@@ -299,33 +376,24 @@ public class AccountFragment extends Fragment {
             }
         }
     }
-    private void openImageChooser()
-    {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select new profile pictuer"), REQUEST_CODE);
-    }
+
     @Override
     public void onActivityResult(final int requestCode, final int resultCode, @Nullable final Intent data) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && null != data) {
-                    final Uri selectedImage = data.getData();
-                    profileView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            profileView.setImageURI(selectedImage);
-                            uploadBtn = (Button) getActivity().findViewById(R.id.registerBtn);
-                            uploadBtn.setVisibility(View.VISIBLE);
-                        }
-                    });
-                }
+        if(requestCode == 0533)
+        {
+            if(resultCode == RESULT_OK && data!=null)
+            {
+                imageUri = data.getData();
+                profileView = getView().findViewById(R.id.profileView);
+                Picasso.get()
+                        .load(imageUri)
+                        .fit().centerCrop()
+                        .into(profileView);
+                uploadBtn.setVisibility(View.VISIBLE);
+                cancelUpload = getView().findViewById(R.id.f_account_cancel_change_photo);
+                cancelUpload.setVisibility(View.VISIBLE);
             }
-        }).start();
-
-        super.onActivityResult(requestCode, resultCode, data);
+        }
     }
     //END
 }
