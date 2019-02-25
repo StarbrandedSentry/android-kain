@@ -101,7 +101,7 @@ public class ActiveStoreActivity extends AppCompatActivity implements AvailMenuA
         viewPager = findViewById(R.id.a_active_store_container);
         setUpViewPager(viewPager);
 
-        TabLayout tabLayout = findViewById(R.id.a_active_store_tab);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.a_active_store_tab);
         tabLayout.setupWithViewPager(viewPager);
 
         //IF ACTIVITY WAS OPENED BY OWNER
@@ -588,9 +588,9 @@ public class ActiveStoreActivity extends AppCompatActivity implements AvailMenuA
     private void setUpViewPager(ViewPager viewPager)
     {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
-        adapter.addFragment(new StoreDetailsFragment(), "Details");
-        adapter.addFragment(new StoreMenuFragment(), "Menu");
-        adapter.addFragment(new StorePromosFragment(), "Promos");
+        adapter.addFragment(new StoreDetailsFragment(), "Details", old.getExtras().getBoolean("byOwner"), old.getStringExtra("id"));
+        adapter.addFragment(new StoreMenuFragment(), "Menu", old.getExtras().getBoolean("byOwner"), old.getStringExtra("id"));
+        adapter.addFragment(new StorePromosFragment(), "Promos", old.getExtras().getBoolean("byOwner"), old.getStringExtra("id"));
         viewPager.setAdapter(adapter);
     }
 }

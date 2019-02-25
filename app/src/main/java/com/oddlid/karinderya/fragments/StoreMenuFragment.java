@@ -11,10 +11,13 @@ import android.view.ViewGroup;
 import com.oddlid.karinderya.R;
 
 public class StoreMenuFragment extends Fragment {
+    Bundle oldBundle;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_store_menu, container, false);
+        oldBundle = getArguments();
+
 
         return view;
     }
