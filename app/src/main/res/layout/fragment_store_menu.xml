@@ -24,12 +24,11 @@
 
         <Button
             android:id="@+id/f_store_menu_set_available"
-            style="@style/FilledFlat"
+            style="@style/TransparentFlat"
             android:layout_width="0dp"
             android:layout_height="@dimen/textHeight"
-            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/text_title"
+            android:background="@drawable/transparent_btn"
             android:text="set availables"
             android:textSize="@dimen/smallFont"
             android:visibility="gone"
@@ -42,12 +41,11 @@
 
         <Button
             android:id="@+id/f_store_menu_add_item"
-            style="@style/FilledFlat"
+            style="@style/TransparentFlat"
             android:layout_width="0dp"
             android:layout_height="@dimen/textHeight"
-            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/text_title"
+            android:background="@drawable/transparent_btn"
             android:text="Add Item"
             android:textSize="@dimen/smallFont"
             android:visibility="gone"

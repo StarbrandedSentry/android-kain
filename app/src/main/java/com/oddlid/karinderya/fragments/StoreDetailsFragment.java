@@ -24,9 +24,9 @@ import com.oddlid.karinderya.Request;
 
 public class StoreDetailsFragment extends Fragment {
     Bundle oldBundle;
-    TextView name, dateStarted, location, contactNumber, operatingHours;
+    TextView name, dateStarted, location, contactNumber, operatingHours, rateThis;
     Button submitRating;
-    RatingBar storeRating;
+    RatingBar storeRating, storeRatingView;
 
     FirebaseAuth fbAuth;
     DatabaseReference storeDb;
@@ -46,13 +46,11 @@ public class StoreDetailsFragment extends Fragment {
         contactNumber = view.findViewById(R.id.f_store_detail_contact_number);
         operatingHours = view.findViewById(R.id.f_store_detail_operating_hours);
         storeRating = view.findViewById(R.id.f_store_detail_rating);
-        submitRating = view.findViewById(R.id.f_store_detail_submit_rating);
-
-        //work
-        setEnabled(view);
-        initDetails(view);
+        storeRatingView = view.findViewById(R.id.f_store_detail_rating_view);
+        rateThis = view.findViewById(R.id.f_store_detail_rating_this_title);
 
         //setting on clicks
+        submitRating = view.findViewById(R.id.f_store_detail_submit_rating);
         submitRating.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,7 +64,7 @@ public class StoreDetailsFragment extends Fragment {
 
                         if(dataSnapshot.child("rated_by").child(fbAuth.getUid()).exists())
                         {
-                            final int count = dataSnapshot.child("rated").getValue(int.class);
+                            final float count = dataSnapshot.child("rated").getValue(float.class);
                             float rate = dataSnapshot.child("rating").getValue(float.class);
                             final float newRate = ((rate - dataSnapshot.child("rated_by").child(fbAuth.getUid()).getValue(float.class)) + storeRating.getRating()) / count;
                             final float mRating = storeRating.getRating();
@@ -89,11 +87,11 @@ public class StoreDetailsFragment extends Fragment {
                                 }
                             });
                         }
-                        else if(dataSnapshot.child("rating").exists())
+                        else if(dataSnapshot.child("rating").exists() && !dataSnapshot.child("rated_by").child(fbAuth.getUid()).exists())
                         {
-                            int count = dataSnapshot.child("rated").getValue(int.class);
+                            float count = dataSnapshot.child("rated").getValue(float.class);
                             float rate = dataSnapshot.child("rating").getValue(float.class);
-                            final int newCount = count + 1;
+                            final float newCount = count + 1;
                             final float newRate = (rate + storeRating.getRating()) / newCount;
                             final float mRating = storeRating.getRating();
 
@@ -115,18 +113,17 @@ public class StoreDetailsFragment extends Fragment {
                                 }
                             });
                         }
-                        else
+                        else if(!dataSnapshot.child("rating").exists() && !dataSnapshot.child("rated_by").child(fbAuth.getUid()).exists())
                         {
-                            storeDb.child("rating").setValue(storeRating.getRating()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            final float number = 1;
+                            final float mRating = storeRating.getRating();
+                            storeDb.child("rating").setValue(mRating).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    final int one = 1;
-                                    final float mRating = storeRating.getRating();
-
-                                    storeDb.child("rated").setValue(one).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    storeDb.child("rated").setValue(number).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            storeDb.child("rated_by").child(fbAuth.getUid()).setValue(mRating).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            storeDb .child("rated_by").child(fbAuth.getUid()).setValue(mRating).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     Toast.makeText(getContext(), "Rated!", Toast.LENGTH_SHORT).show();
@@ -134,7 +131,6 @@ public class StoreDetailsFragment extends Fragment {
                                             });
                                         }
                                     });
-
                                 }
                             });
                         }
@@ -147,6 +143,10 @@ public class StoreDetailsFragment extends Fragment {
                 });
             }
         });
+
+        //work
+        setEnabled(view);
+        initDetails(view);
 
         return view;
     }
@@ -174,9 +174,13 @@ public class StoreDetailsFragment extends Fragment {
 
                 if(dataSnapshot.child("rating").exists())
                 {
-                    storeRating.setRating(dataSnapshot.child("rating").getValue(float.class));
+                    storeRatingView.setRating(dataSnapshot.child("rating").getValue(float.class));
                 }
 
+                if(dataSnapshot.child("rated_by").child(fbAuth.getUid()).exists())
+                {
+                    storeRating.setRating(dataSnapshot.child("rated_by").child(fbAuth.getUid()).getValue(float.class));
+                }
             }
 
             @Override
@@ -193,8 +197,9 @@ public class StoreDetailsFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.child("uid").getValue(String.class).equals(fbAuth.getUid()))
                 {
-                    storeRating.setIsIndicator(true);
+                    storeRating.setVisibility(View.GONE);
                     submitRating.setVisibility(View.GONE);
+                    rateThis.setVisibility(View.GONE);
                 }
             }
 

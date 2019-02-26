@@ -57,8 +57,9 @@ public class PromoAdapter extends RecyclerView.Adapter<PromoAdapter.PromoHolder>
         return names.size();
     }
 
-    public class PromoHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
+    public class PromoHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener, View.OnClickListener {
         public TextView name, description, type, time_type, time_frame, store;
+        public OnMenuListener onMenuListener;
         public PromoHolder(@NonNull View itemView, OnMenuListener onMenuListener) {
             super(itemView);
             name = itemView.findViewById(R.id.l_promo_name);
@@ -67,8 +68,10 @@ public class PromoAdapter extends RecyclerView.Adapter<PromoAdapter.PromoHolder>
             time_type = itemView.findViewById(R.id.l_promo_time);
             time_frame = itemView.findViewById(R.id.l_promo_time_frame);
             store = itemView.findViewById(R.id.l_promo_store);
+            this.onMenuListener = onMenuListener;
 
             itemView.setOnCreateContextMenuListener(this);
+            itemView.setOnClickListener(this);
         }
 
         @Override
@@ -93,6 +96,11 @@ public class PromoAdapter extends RecyclerView.Adapter<PromoAdapter.PromoHolder>
 
                 remove.setOnMenuItemClickListener(this);
             }
+        }
+
+        @Override
+        public void onClick(View v) {
+            onMenuListener.onMenuClick(getAdapterPosition(), store_ids.get(getAdapterPosition()));
         }
     }
 

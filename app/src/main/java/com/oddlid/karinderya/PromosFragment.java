@@ -1,6 +1,7 @@
 package com.oddlid.karinderya;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -26,6 +27,7 @@ public class PromosFragment extends Fragment implements PromoAdapter.OnMenuListe
     private RecyclerView recyclerView, promoRecycler;
     private RecyclerView.Adapter recyclerAdapter, promoAdapter;
     private RecyclerView.LayoutManager layoutManager, promoLayout;
+
 
     public PromosFragment() {
         // Required empty public constructor
@@ -91,9 +93,13 @@ public class PromosFragment extends Fragment implements PromoAdapter.OnMenuListe
         });
     }
 
+
     @Override
     public void onMenuClick(int position, String id) {
-
+        Intent intent = new Intent(getActivity(), ActiveStoreActivity.class);
+        intent.putExtra("id", id);
+        intent.putExtra("byOwner", false);
+        startActivity(intent);
     }
 
     @Override

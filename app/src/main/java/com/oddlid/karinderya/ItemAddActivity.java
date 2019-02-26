@@ -115,7 +115,7 @@ public class ItemAddActivity extends AppCompatActivity implements ItemAddAdapter
             menuDb.child("availability").setValue("unavailable").addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Toast.makeText(getApplicationContext(), "Done!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -124,7 +124,7 @@ public class ItemAddActivity extends AppCompatActivity implements ItemAddAdapter
             menuDb.child("availability").setValue("available").addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Toast.makeText(getApplicationContext(), "Done!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Saved!", Toast.LENGTH_SHORT).show();
                 }
             });
         }
