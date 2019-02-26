@@ -104,7 +104,7 @@ public class ActRequestActivity extends AppCompatActivity {
 
                 id.setText("Request ID: " + dataSnapshot.getKey());
                 name.setText("Karinderya Name: " + request.getName());
-                date.setText("Date Made: " + request.getDate_made());
+                date.setText("Request Date: " + request.getDate_made());
                 street_address.setText("Street Address: " + request.getStreet_address());
                 city.setText("City: " + request.getCity());
                 contact_number.setText("Contact Number: " + request.getContact_number());
@@ -117,7 +117,7 @@ public class ActRequestActivity extends AppCompatActivity {
                         .into(banner);
                 if(dataSnapshot.child("time_from").exists())
                 {
-                    hours.setText("Open Hours: " + request.getTime_from() + " - " + request.getTime_from());
+                    hours.setText("Open Hours: " + request.getTime_from() + " - " + request.getTime_to());
                 }
             }
 

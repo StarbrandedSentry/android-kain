@@ -10,51 +10,59 @@
     </style>
 
 
-
     <style name="FilledFlat">
-        <item name = "android:textColor">@color/colorWhite</item>
-        <item name = "android:textStyle">bold</item>
-        <item name = "android:paddingStart">@dimen/materialPadding</item>
-        <item name = "android:paddingEnd">@dimen/materialPadding</item>
-        <item name = "android:paddingTop">@dimen/materialPadding</item>
-        <item name = "android:paddingBottom">@dimen/materialPadding</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingStart">@dimen/materialPadding</item>
+        <item name="android:paddingEnd">@dimen/materialPadding</item>
+        <item name="android:paddingTop">@dimen/materialPadding</item>
+        <item name="android:paddingBottom">@dimen/materialPadding</item>
     </style>
 
     <style name="BorderFlat">
-        <item name = "android:textColor">@color/colorPrimary</item>
-        <item name = "android:paddingStart">@dimen/materialPadding</item>
-        <item name = "android:paddingEnd">@dimen/materialPadding</item>
-        <item name = "android:paddingTop">@dimen/materialPadding</item>
-        <item name = "android:paddingBottom">@dimen/materialPadding</item>
-        <item name = "android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:paddingStart">@dimen/materialPadding</item>
+        <item name="android:paddingEnd">@dimen/materialPadding</item>
+        <item name="android:paddingTop">@dimen/materialPadding</item>
+        <item name="android:paddingBottom">@dimen/materialPadding</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="TransparentFlat">
-        <item name = "android:paddingEnd">@dimen/materialPadding</item>
-        <item name = "android:paddingTop">@dimen/materialPadding</item>
-        <item name = "android:paddingBottom">@dimen/materialPadding</item>
-        <item name = "android:paddingStart">@dimen/defStartPadding</item>
-        <item name = "android:textStyle">bold</item>
-        <item name ="android:textAlignment">textStart</item>
+        <item name="android:paddingEnd">@dimen/materialPadding</item>
+        <item name="android:paddingTop">@dimen/materialPadding</item>
+        <item name="android:paddingBottom">@dimen/materialPadding</item>
+        <item name="android:paddingStart">@dimen/defStartPadding</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAlignment">textStart</item>
     </style>
 
     <style name="TransparentInfo">
-        <item name = "android:paddingStart">@dimen/defStartPadding</item>
-        <item name ="android:textAlignment">textStart</item>
-        <item name = "android:color">@color/colorBlack</item>
-        <item name = "android:gravity">center</item>
+        <item name="android:paddingStart">@dimen/defStartPadding</item>
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:color">@color/colorBlack</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <style name="Title">
-        <item name = "android:textColor">@color/colorPrimary</item>
-        <item name = "android:textStyle">bold</item>
-        <item name = "android:textSize">@dimen/largeFont</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/largeFont</item>
     </style>
 
     <style name="TitleHolder">
-        <item name = "android:textColor">@color/colorWhite</item>
-        <item name = "android:paddingEnd">@dimen/defStartPadding</item>
-        <item name = "android:gravity">center</item>
-        <item name = "android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:paddingEnd">@dimen/defStartPadding</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

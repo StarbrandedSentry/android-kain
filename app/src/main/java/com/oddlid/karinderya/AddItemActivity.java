@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -24,7 +24,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
@@ -37,7 +36,7 @@ public class AddItemActivity extends AppCompatActivity {
     ProgressBar pb;
     private Uri imageUri;
     public ImageView image;
-    EditText name;
+    EditText name, price;
     Boolean flag;
 
     DatabaseReference storeDB = FirebaseDatabase.getInstance().getReference("Stores");
@@ -48,6 +47,7 @@ public class AddItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_item);
         name = findViewById(R.id.a_addItem_name);
+        price = findViewById(R.id.a_addItem_price);
 
         pb = findViewById(R.id.a_addItem_pb);
         image = findViewById(R.id.a_addItem_image);
@@ -68,7 +68,13 @@ public class AddItemActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, PICK_IMAGE_REQUEST_CODE);
+
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        Intent chooserIntent = Intent.createChooser(intent, "Select Image");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+        startActivityForResult(chooserIntent, PICK_IMAGE_REQUEST_CODE);
     }
 
 
@@ -85,43 +91,33 @@ public class AddItemActivity extends AppCompatActivity {
                     final String itemID = random();
                     if(!dataSnapshot.hasChild(itemID))
                     {
+                        pb.setVisibility(View.VISIBLE);
                         //start uploading!
                         if(imageUri != null)
                         {
+                            pb.setVisibility(View.VISIBLE);
                             final StorageReference menuST = storeST.child(id).child("menu").child(itemID);
                             menuST.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    //delay resetting the shit
-                                    Handler handler = new Handler();
-                                    handler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            pb.setProgress(0);
-                                        }
-                                    }, 750);
 
                                     menuST.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                         @Override
                                         public void onSuccess(Uri uri) {
-                                            MenuItem menu = new MenuItem(name.getText().toString(), uri.toString(), "available");
+                                            MenuItem menu = new MenuItem(name.getText().toString(), uri.toString(), "unavailable", price.getText().toString());
                                             DatabaseReference menuDB = storeDB.child(id).child("menu").child(itemID);
                                             menuDB.setValue(menu).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
+                                                    pb.setVisibility(View.GONE);
                                                     Snackbar.make(view, "Done!", Snackbar.LENGTH_SHORT).show();
 
                                                     name.setText("");
+                                                    price.setText("");
                                                 }
                                             });
                                         }
                                     });
-                                }
-                            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                    double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                                    pb.setProgress((int) progress);
                                 }
                             });
                         }

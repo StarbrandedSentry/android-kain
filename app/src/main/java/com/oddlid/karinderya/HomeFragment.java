@@ -65,7 +65,8 @@ public class HomeFragment extends Fragment implements HomeAdapter.OnCardListener
                             ratings.add("No rating");
                             continue;
                         }
-                        ratings.add(data.child("rating").getValue().toString());
+
+                        ratings.add(String.format("%.2f", data.child("rating").getValue(float.class)));
                     }
 
                 }
@@ -85,7 +86,6 @@ public class HomeFragment extends Fragment implements HomeAdapter.OnCardListener
         });
     }
 
-    @Override
     public void onCardClick(final int position) {
         DatabaseReference requestDB = FirebaseDatabase.getInstance().getReference().child("Stores");
         requestDB.addListenerForSingleValueEvent(new ValueEventListener() {

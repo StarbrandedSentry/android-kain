@@ -26,4 +26,5 @@
         <item>24 hours</item>
         <item>Certain Time</item>
     </string-array>
+    <string name="title_activity_items">ItemsActivity</string>
 </resources>

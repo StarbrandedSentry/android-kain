@@ -6,7 +6,7 @@ public class MenuItem {
 
     }
 
-    public MenuItem(String name, String url,String availability)
+    public MenuItem(String name, String url,String availability, String price)
     {
         if(name.trim().equals(""))
         {
@@ -16,8 +16,17 @@ public class MenuItem {
         this.name = name;
         this.image_url = url;
         this.availability = availability;
+        this.price = price;
     }
-    private String availability, name, image_url;
+    private String availability, name, image_url, price;
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
 
     public String getAvailability() {
         return availability;

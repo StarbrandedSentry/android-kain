@@ -19,12 +19,13 @@ import java.util.ArrayList;
 public class AvailMenuAdapter extends RecyclerView.Adapter<AvailMenuAdapter.AvailHolder> {
     private ArrayList<String> images;
     private ArrayList<String> names;
+    private ArrayList<String> prices;
     private OnMenuListener onMenuListener;
     private boolean key;
     private String id;
     private String url;
 
-    public AvailMenuAdapter(ArrayList<String> images, ArrayList<String> names, OnMenuListener onMenuListener, boolean key, String id, String url)
+    public AvailMenuAdapter(ArrayList<String> images, ArrayList<String> names, ArrayList<String> prices, OnMenuListener onMenuListener, boolean key, String id, String url)
     {
         this.images = images;
         this.names = names;
@@ -32,6 +33,7 @@ public class AvailMenuAdapter extends RecyclerView.Adapter<AvailMenuAdapter.Avai
         this.key = key;
         this.id = id;
         this.url = url;
+        this.prices = prices;
     }
 
     @NonNull
@@ -44,6 +46,7 @@ public class AvailMenuAdapter extends RecyclerView.Adapter<AvailMenuAdapter.Avai
     @Override
     public void onBindViewHolder(@NonNull AvailHolder availHolder, int i) {
         availHolder.name.setText(names.get(i));
+        availHolder.price.setText(prices.get(i));
 
         Picasso.get()
                 .load(images.get(i))
@@ -62,11 +65,13 @@ public class AvailMenuAdapter extends RecyclerView.Adapter<AvailMenuAdapter.Avai
     {
         public ImageView image;
         public TextView name;
+        public TextView price;
         OnMenuListener onMenuListener;
         public AvailHolder(@NonNull View itemView, OnMenuListener onMenuListener) {
             super(itemView);
             image = itemView.findViewById(R.id.avail_menu_image);
             name = itemView.findViewById(R.id.avail_menu_name);
+            price = itemView.findViewById(R.id.avail_menu_price);
             this.onMenuListener = onMenuListener;
 
             itemView.setOnClickListener(this);

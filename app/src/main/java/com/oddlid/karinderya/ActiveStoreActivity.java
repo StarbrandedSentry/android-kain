@@ -65,9 +65,8 @@ public class ActiveStoreActivity extends AppCompatActivity implements AvailMenuA
 
     //control init
     Dialog imageZoom, promoMenu;
-    TextView location;
-    TextView name;
     ImageView banner;
+    TextView name;
     ProgressBar uploadProg;
     ImageView zoomed;
     ImageButton closeDialog;
@@ -108,14 +107,14 @@ public class ActiveStoreActivity extends AppCompatActivity implements AvailMenuA
         if (intent.getExtras().getBoolean("byOwner")) {
             //add to show
             /*Button addAvailable = findViewById(R.id.a_activeStore_addAvailable_btn);
-            addAvailable.setVisibility(View.VISIBLE);
+            addAvailable.setVisibility(View.VISIBLE);*/
             Button changeBanner = findViewById(R.id.a_activeStore_changeBanner_btn);
             changeBanner.setVisibility(View.VISIBLE);
             Button cancelChange = findViewById(R.id.a_activeStore_cancelChangeBanner_btn);
             cancelChange.setVisibility(View.VISIBLE);
             Button chooseImage = findViewById(R.id.a_activeStore_choosePhoto_btn);
             chooseImage.setVisibility(View.VISIBLE);
-            Button createPromo = findViewById(R.id.a_activeStore_createPromo_btn);
+            /*Button createPromo = findViewById(R.id.a_activeStore_createPromo_btn);
             createPromo.setVisibility(View.VISIBLE);
             storeLocation = findViewById(R.id.a_activeStore_map_location);
             storeLocation.setVisibility(View.VISIBLE);*/
@@ -123,9 +122,29 @@ public class ActiveStoreActivity extends AppCompatActivity implements AvailMenuA
         banner = findViewById(R.id.a_activeStore_banner);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        initBanner();
         //initInfo();
         //initAvailMenu();
         //initPromo();
+    }
+
+    private void initBanner()
+    {
+        DatabaseReference bannerDb = FirebaseDatabase.getInstance().getReference("Stores").child(old.getStringExtra("id"));
+        bannerDb.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Picasso.get()
+                        .load(dataSnapshot.child("banner").getValue().toString())
+                        .fit().centerCrop()
+                        .into(banner);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void initPromo() {

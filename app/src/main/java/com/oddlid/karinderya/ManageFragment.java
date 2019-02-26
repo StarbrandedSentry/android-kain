@@ -47,6 +47,7 @@ public class ManageFragment extends Fragment implements RequestAdapter.OnNoteLis
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        fbAuth = FirebaseAuth.getInstance();
         initPendingView();
         initActiveStores();
 
@@ -65,7 +66,7 @@ public class ManageFragment extends Fragment implements RequestAdapter.OnNoteLis
                 ArrayList<String> mRequestID = new ArrayList<>();
                 for(DataSnapshot data : dataSnapshot.getChildren())
                 {
-                    if(data.child("status").getValue().equals("pending"))
+                    if(data.child("status").getValue().equals("pending") && data.child("uid").getValue().equals(fbAuth.getUid()))
                     {
                         mDateMade.add(data.child("date_made").getValue(String.class));
                         mStoreNames.add(data.child("name").getValue(String.class));
@@ -113,7 +114,7 @@ public class ManageFragment extends Fragment implements RequestAdapter.OnNoteLis
                 ArrayList<String> locations = new ArrayList<>();
                 for(DataSnapshot data : dataSnapshot.getChildren())
                 {
-                    if(data.child("status").getValue().equals("accepted"))
+                    if(data.child("status").getValue().equals("accepted") && data.child("uid").getValue().equals(fbAuth.getUid()))
                     {
                         locations.add(data.child("street_address").getValue(String.class) + ", " + data.child("city").getValue(String.class));
                         names.add(data.child("name").getValue(String.class));
