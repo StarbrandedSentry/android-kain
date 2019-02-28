@@ -46,7 +46,7 @@ public class HomeFragment extends Fragment implements HomeAdapter.OnCardListener
     private void initStores()
     {
         DatabaseReference storeRef = FirebaseDatabase.getInstance().getReference().child("Stores");
-        storeRef.addValueEventListener(new ValueEventListener() {
+        storeRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> names = new ArrayList<>();
@@ -94,7 +94,11 @@ public class HomeFragment extends Fragment implements HomeAdapter.OnCardListener
                 ArrayList<String> mRequestID = new ArrayList<>();
                 for(DataSnapshot data : dataSnapshot.getChildren())
                 {
-                    mRequestID.add(data.getKey());
+                    if(data.child("status").getValue().equals("accepted"))
+                    {
+                        mRequestID.add(data.getKey());
+                    }
+
                 }
                 final String id = mRequestID.get(position);
 

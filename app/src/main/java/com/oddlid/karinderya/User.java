@@ -7,12 +7,23 @@ public class User {
     {
         this.name = name;
         this.user_level = user_level;
+        this.store_count = 0;
     }
 
     private String name;
-    private int user_level;
+    private int user_level, store_count;
 
     //SETTERS AND GETTERS LOG: name, user_level
+
+
+    public int getStore_count() {
+        return store_count;
+    }
+
+    public void setStore_count(int store_count) {
+        this.store_count = store_count;
+    }
+
     public String getName() {
         return name;
     }

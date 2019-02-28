@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,7 +52,7 @@ public class ActRequestActivity extends AppCompatActivity {
     private ArrayList<EntryUpload> mUploads;
 
     //firebase init
-    FirebaseAuth fbAuth;
+    FirebaseUser fbAuth;
     DatabaseReference dbRef;
     StorageReference storeRef;
 
@@ -59,7 +60,7 @@ public class ActRequestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_act_request);
-        fbAuth = FirebaseAuth.getInstance();
+        fbAuth = FirebaseAuth.getInstance().getCurrentUser();
         initRequest();
 
     }
@@ -70,7 +71,7 @@ public class ActRequestActivity extends AppCompatActivity {
         String reqID = intent.getStringExtra("propID");
 
         dbRef = FirebaseDatabase.getInstance().getReference().child("Stores").child(reqID);
-        dbRef.addValueEventListener(new ValueEventListener() {
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 id = findViewById(R.id.propIDView);
@@ -113,7 +114,7 @@ public class ActRequestActivity extends AppCompatActivity {
                 operating_hours.setText("Operating Hours: " + request.getOperating_hours());
                 Picasso.get()
                         .load(dataSnapshot.child("banner").getValue(String.class))
-                        .fit().centerInside()
+                        .fit().centerCrop()
                         .into(banner);
                 if(dataSnapshot.child("time_from").exists())
                 {
@@ -165,37 +166,19 @@ public class ActRequestActivity extends AppCompatActivity {
                             ddRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if(dataSnapshot.child("store_count").exists())
-                                    {
-                                        int count = dataSnapshot.child("store_count").getValue(int.class) + 1;
-                                        ddRef.child("store_count").setValue(count).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Toast.makeText(getApplicationContext(), "Done!", Toast.LENGTH_SHORT).show();
-                                                finish();
-                                                /*Intent open = new Intent(ActRequestActivity.this, AdminActivity.class);
-                                                open.putExtra("message", "Request has been accepted!");
-                                                open.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                open.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                startActivity(open);*/
-                                            }
-                                        });
-                                    }
-                                    else
-                                    {
-                                        ddRef.child("store_count").setValue(1).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Toast.makeText(getApplicationContext(), "Done!", Toast.LENGTH_SHORT).show();
-                                                finish();
-                                                /*Intent open = new Intent(ActRequestActivity.this, AdminActivity.class);
-                                                open.putExtra("message", "Request has been accepted!");
-                                                open.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                open.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                startActivity(open);*/
-                                            }
-                                        });
-                                    }
+                                    int count = dataSnapshot.child("store_count").getValue(int.class) + 1;
+                                    ddRef.child("store_count").setValue(count).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Toast.makeText(getApplicationContext(), "Done!", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                            /*Intent open = new Intent(ActRequestActivity.this, AdminActivity.class);
+                                            open.putExtra("message", "Request has been accepted!");
+                                            open.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            open.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            startActivity(open);*/
+                                        }
+                                    });
                                 }
 
                                 @Override
@@ -323,5 +306,12 @@ public class ActRequestActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        finish();
     }
 }

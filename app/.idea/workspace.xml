@@ -96,21 +96,22 @@
           <entry key="project.open.time.36" value="1" />
           <entry key="project.open.time.38" value="1" />
           <entry key="project.open.time.44" value="1" />
+          <entry key="project.open.time.47" value="1" />
           <entry key="project.open.time.48" value="1" />
           <entry key="project.open.time.49" value="1" />
           <entry key="project.open.time.69" value="1" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="30" />
+          <entry key="project.opened" value="31" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="class" value="1" />
           <entry key="gradle" value="8" />
-          <entry key="java" value="244" />
+          <entry key="java" value="261" />
           <entry key="jpg" value="1" />
           <entry key="png" value="4" />
-          <entry key="xml" value="250" />
+          <entry key="xml" value="252" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
@@ -118,14 +119,14 @@
           <entry key="CLASS" value="1" />
           <entry key="Groovy" value="8" />
           <entry key="Image" value="5" />
-          <entry key="JAVA" value="244" />
-          <entry key="XML" value="250" />
+          <entry key="JAVA" value="261" />
+          <entry key="XML" value="252" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="gradle" value="44" />
-          <entry key="java" value="58381" />
+          <entry key="java" value="59957" />
           <entry key="txt" value="3543" />
           <entry key="xml" value="8978" />
         </counts>
@@ -133,7 +134,7 @@
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Groovy" value="44" />
-          <entry key="JAVA" value="58381" />
+          <entry key="JAVA" value="59957" />
           <entry key="PLAIN_TEXT" value="3543" />
           <entry key="XML" value="8978" />
         </counts>
@@ -142,32 +143,52 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/RegisterActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3228">
+              <caret line="428" column="45" lean-forward="true" selection-start-line="428" selection-start-column="45" selection-end-line="428" selection-end-column="45" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/fragments/StoreDetailsFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="253">
-              <caret line="101" column="49" lean-forward="true" selection-start-line="101" selection-start-column="49" selection-end-line="101" selection-end-column="49" />
+            <state relative-caret-position="1338">
+              <caret line="116" column="27" lean-forward="true" selection-start-line="116" selection-start-column="27" selection-end-line="116" selection-end-column="27" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#2345#7976#0" expanded="true" />
-                <element signature="e#3427#4501#0" expanded="true" />
-                <element signature="e#3665#4435#0" expanded="true" />
-                <element signature="e#3956#4353#0" expanded="true" />
-                <element signature="e#4352#4353#0" expanded="true" />
-                <element signature="e#4434#4435#0" expanded="true" />
-                <element signature="e#4500#4501#0" expanded="true" />
-                <element signature="e#5204#6272#0" expanded="true" />
-                <element signature="e#5735#6123#0" expanded="true" />
-                <element signature="e#6122#6123#0" expanded="true" />
-                <element signature="e#6205#6206#0" expanded="true" />
-                <element signature="e#6271#6272#0" expanded="true" />
-                <element signature="e#6681#7744#0" expanded="true" />
-                <element signature="e#6917#7678#0" expanded="true" />
-                <element signature="e#7208#7596#0" expanded="true" />
-                <element signature="e#7595#7596#0" expanded="true" />
-                <element signature="e#7677#7678#0" expanded="true" />
-                <element signature="e#7743#7744#0" expanded="true" />
-                <element signature="e#7975#7976#0" expanded="true" />
+                <element signature="e#2451#5270#0" expanded="true" />
+                <element signature="e#4143#5147#0" expanded="true" />
+                <element signature="e#4369#5089#0" expanded="true" />
+                <element signature="e#4647#5015#0" expanded="true" />
+                <element signature="e#5014#5015#0" expanded="true" />
+                <element signature="e#5088#5089#0" expanded="true" />
+                <element signature="e#5146#5147#0" expanded="true" />
+                <element signature="e#5269#5270#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/ManageFragment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-869">
+              <caret line="41" selection-start-line="41" selection-end-line="41" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/ActRequestActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1032">
+              <caret line="109" column="59" selection-start-line="109" selection-start-column="59" selection-end-line="109" selection-end-column="59" />
+              <folding>
+                <element signature="e#7438#8318#0" expanded="true" />
+                <element signature="e#8317#8318#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -220,15 +241,12 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/res/drawable/round_btn.xml" />
-        <option value="$PROJECT_DIR$/src/main/res/drawable/round_border_btn.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/models/DatePickerFragment.java" />
         <option value="$PROJECT_DIR$/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/src/main/res/layout/dark_flat_spinner.xml" />
         <option value="$PROJECT_DIR$/src/main/res/drawable/textviewbox.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/Request.java" />
         <option value="$PROJECT_DIR$/src/main/res/drawable/transparent_btn.xml" />
-        <option value="$PROJECT_DIR$/src/main/res/layout/activity_register.xml" />
         <option value="$PROJECT_DIR$/src/main/res/values/dimen.xml" />
         <option value="$PROJECT_DIR$/src/main/res/drawable/white_round_btn.xml" />
         <option value="$PROJECT_DIR$/src/main/res/drawable/white_border.xml" />
@@ -240,13 +258,10 @@
         <option value="$PROJECT_DIR$/src/main/res/layout/fragment_account.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/RequestAdapter.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/AdminActivity.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/RegisterActivity.java" />
         <option value="$PROJECT_DIR$/src/main/res/layout/layout_active_store.xml" />
         <option value="$PROJECT_DIR$/src/main/res/layout/layout_home_view.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/HomeAdapter.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/utils/SectionsPageAdapter.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/ActRequestActivity.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/ManageFragment.java" />
         <option value="$PROJECT_DIR$/src/main/res/layout/dialog_add_promo.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/oddlid/Item.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/MenuItem.java" />
@@ -255,7 +270,6 @@
         <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/AvailMenuAdapter.java" />
         <option value="$PROJECT_DIR$/src/main/res/layout/activity_item_add.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/ActiveStoreActivity.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/HomeFragment.java" />
         <option value="$PROJECT_DIR$/src/main/res/layout/layout_menu_items.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/ItemAddAdapter.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/ItemAddActivity.java" />
@@ -270,7 +284,14 @@
         <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/fragments/StoreMenuFragment.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/PromoAdapter.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/PromosFragment.java" />
+        <option value="$PROJECT_DIR$/src/main/res/layout/activity_register.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/RegisterActivity.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/User.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/Rating.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/HomeFragment.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/fragments/StoreDetailsFragment.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/ManageFragment.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/ActRequestActivity.java" />
       </list>
     </option>
   </component>
@@ -298,6 +319,7 @@
         </subPane>
       </pane>
       <pane id="PackagesPane" />
+      <pane id="ProjectPane" />
       <pane id="Scope">
         <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
           <expand>
@@ -460,7 +482,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="ProjectPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -610,9 +631,10 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
-      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.33102345" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.33102345" />
       <window_info id="Structure" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info id="Build Variants" order="4" side_tool="true" />
@@ -627,7 +649,7 @@
       <window_info anchor="bottom" id="Terminal" order="5" weight="0.329718" />
       <window_info anchor="bottom" id="Event Log" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.329718" />
-      <window_info active="true" anchor="bottom" id="Build" order="8" visible="true" weight="0.34164858" />
+      <window_info anchor="bottom" id="Build" order="8" visible="true" weight="0.34164858" />
       <window_info anchor="bottom" id="Android Profiler" order="9" weight="0.329718" />
       <window_info anchor="right" id="Device File Explorer" order="0" side_tool="true" />
       <window_info anchor="right" id="Capture Analysis" order="1" />
@@ -641,30 +663,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/res/values/dimen.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="21" column="30" selection-start-line="21" selection-start-column="30" selection-end-line="21" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/res/drawable/white_round_btn.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="35" selection-start-line="2" selection-start-column="35" selection-end-line="2" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/res/drawable/round_btn.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="4" selection-start-line="2" selection-start-column="4" selection-end-line="4" selection-end-column="67" />
-          <folding>
-            <element signature="e#160#186#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/drawable/white_border.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
@@ -757,14 +755,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/res/layout/activity_register.xml">
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="1938">
-          <caret line="114" column="48" selection-start-line="114" selection-start-column="48" selection-end-line="114" selection-end-column="48" />
-        </state>
-      </provider>
-      <provider selected="true" editor-type-id="android-designer2" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/layout/activity_admin.xml">
       <provider editor-type-id="text-editor">
         <state relative-caret-position="442">
@@ -851,13 +841,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/RegisterActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1054">
-          <caret line="358" column="8" selection-start-line="358" selection-start-column="8" selection-end-line="362" selection-end-column="88" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/layout/activity_add_item.xml">
       <provider editor-type-id="text-editor">
         <state relative-caret-position="425">
@@ -890,13 +873,6 @@
         </state>
       </provider>
       <provider editor-type-id="android-designer2" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/ManageFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="199">
-          <caret line="144" column="74" selection-start-line="144" selection-start-column="74" selection-end-line="144" selection-end-column="74" />
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/AvailMenuAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -980,13 +956,6 @@
       </provider>
       <provider selected="true" editor-type-id="android-designer2" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/ActRequestActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="341">
-          <caret line="164" column="83" selection-start-line="164" selection-start-column="83" selection-end-line="164" selection-end-column="83" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/fragments/StorePromosFragment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="336">
@@ -1017,13 +986,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1258">
           <caret line="504" column="36" selection-start-line="504" selection-start-column="36" selection-end-line="504" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/HomeFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="284">
-          <caret line="103" column="38" selection-start-line="103" selection-start-column="38" selection-end-line="103" selection-end-column="38" />
         </state>
       </provider>
     </entry>
@@ -1100,6 +1062,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/res/layout/activity_register.xml">
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="1938">
+          <caret line="114" column="48" selection-start-line="114" selection-start-column="48" selection-end-line="114" selection-end-column="48" />
+        </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer2" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/User.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+          <folding>
+            <element signature="e#348#349#0" expanded="true" />
+            <element signature="e#382#383#0" expanded="true" />
+            <element signature="e#433#434#0" expanded="true" />
+            <element signature="e#479#480#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/SignupActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-544">
+          <caret line="21" column="13" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/res/layout/fragment_store_details.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="73">
@@ -1108,31 +1098,69 @@
       </provider>
       <provider editor-type-id="android-designer2" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/Rating.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="17" column="22" lean-forward="true" selection-start-line="17" selection-start-column="22" selection-end-line="17" selection-end-column="22" />
+          <folding>
+            <element signature="e#151#152#0" expanded="true" />
+            <element signature="e#180#181#0" expanded="true" />
+            <element signature="e#223#224#0" expanded="true" />
+            <element signature="e#259#260#0" expanded="true" />
+            <element signature="e#290#291#0" expanded="true" />
+            <element signature="e#318#319#0" expanded="true" />
+            <element signature="e#359#360#0" expanded="true" />
+            <element signature="e#393#394#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/HomeFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="131">
+          <caret line="98" column="54" selection-start-line="98" selection-start-column="54" selection-end-line="98" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/RegisterActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3228">
+          <caret line="428" column="45" lean-forward="true" selection-start-line="428" selection-start-column="45" selection-end-line="428" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/ActRequestActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1032">
+          <caret line="109" column="59" selection-start-line="109" selection-start-column="59" selection-end-line="109" selection-end-column="59" />
+          <folding>
+            <element signature="e#7438#8318#0" expanded="true" />
+            <element signature="e#8317#8318#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/ManageFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-869">
+          <caret line="41" selection-start-line="41" selection-end-line="41" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/oddlid/karinderya/fragments/StoreDetailsFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="253">
-          <caret line="101" column="49" lean-forward="true" selection-start-line="101" selection-start-column="49" selection-end-line="101" selection-end-column="49" />
+        <state relative-caret-position="1338">
+          <caret line="116" column="27" lean-forward="true" selection-start-line="116" selection-start-column="27" selection-end-line="116" selection-end-column="27" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2345#7976#0" expanded="true" />
-            <element signature="e#3427#4501#0" expanded="true" />
-            <element signature="e#3665#4435#0" expanded="true" />
-            <element signature="e#3956#4353#0" expanded="true" />
-            <element signature="e#4352#4353#0" expanded="true" />
-            <element signature="e#4434#4435#0" expanded="true" />
-            <element signature="e#4500#4501#0" expanded="true" />
-            <element signature="e#5204#6272#0" expanded="true" />
-            <element signature="e#5735#6123#0" expanded="true" />
-            <element signature="e#6122#6123#0" expanded="true" />
-            <element signature="e#6205#6206#0" expanded="true" />
-            <element signature="e#6271#6272#0" expanded="true" />
-            <element signature="e#6681#7744#0" expanded="true" />
-            <element signature="e#6917#7678#0" expanded="true" />
-            <element signature="e#7208#7596#0" expanded="true" />
-            <element signature="e#7595#7596#0" expanded="true" />
-            <element signature="e#7677#7678#0" expanded="true" />
-            <element signature="e#7743#7744#0" expanded="true" />
-            <element signature="e#7975#7976#0" expanded="true" />
+            <element signature="e#2451#5270#0" expanded="true" />
+            <element signature="e#4143#5147#0" expanded="true" />
+            <element signature="e#4369#5089#0" expanded="true" />
+            <element signature="e#4647#5015#0" expanded="true" />
+            <element signature="e#5014#5015#0" expanded="true" />
+            <element signature="e#5088#5089#0" expanded="true" />
+            <element signature="e#5146#5147#0" expanded="true" />
+            <element signature="e#5269#5270#0" expanded="true" />
           </folding>
         </state>
       </provider>

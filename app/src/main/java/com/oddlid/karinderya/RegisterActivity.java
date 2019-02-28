@@ -29,6 +29,7 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,7 +45,6 @@ import com.oddlid.karinderya.models.DatePickerFragment;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -174,6 +174,8 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
     //register button logic
     public void registerBtn(final View view)
     {
+
+
         if(bannerUri == null || pdfUri == null || idUri == null)
         {
             return;
@@ -295,9 +297,10 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
     {
         currentDate = Calendar.getInstance().getTime();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
-        String date = sdf.format(currentDate);
-        return date;
+        //SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
+        //String date = sdf.format(currentDate);
+        String cDate = DateFormat.getDateInstance().format(currentDate);
+        return cDate;
     }
 
     //getting files
@@ -423,6 +426,7 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
                 ImageView banner = findViewById(R.id.a_register_banner);
                 Picasso.get()
                         .load(bannerUri)
+                        .fit().centerInside()
                         .into(banner);
             }
         }
@@ -431,6 +435,15 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        //this wrapper is gucci
+        if((dayOfMonth >= Calendar.getInstance().get(Calendar.DAY_OF_MONTH) && month >= Calendar.getInstance().get(Calendar.MONTH)
+            && year >= Calendar.getInstance().get(Calendar.YEAR)) || (month > Calendar.getInstance().get(Calendar.MONTH) && year >= Calendar.getInstance().get(Calendar.YEAR))
+                || year > Calendar.getInstance().get(Calendar.YEAR))
+        {
+            Toast.makeText(getApplicationContext(), "Date picked should be before the current date!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Calendar c = Calendar.getInstance();
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, month);

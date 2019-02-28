@@ -422,8 +422,8 @@
 
         <ImageView
             android:id="@+id/a_register_banner"
-            android:layout_width="@dimen/textWidth"
-            android:layout_height="75dp"
+            android:layout_width="275dp"
+            android:layout_height="125dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"

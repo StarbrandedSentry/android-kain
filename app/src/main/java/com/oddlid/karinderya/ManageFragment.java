@@ -35,6 +35,11 @@ public class ManageFragment extends Fragment implements RequestAdapter.OnNoteLis
     private RecyclerView.Adapter recyclerAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
+    DatabaseReference cardDb;
+    DatabaseReference noteDb;
+    DatabaseReference storeDb;
+    DatabaseReference pendingDb;
+
     //firebase init
     FirebaseAuth fbAuth;
     DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
@@ -57,8 +62,8 @@ public class ManageFragment extends Fragment implements RequestAdapter.OnNoteLis
 
     private void initPendingView()
     {
-        DatabaseReference requestDB = FirebaseDatabase.getInstance().getReference().child("Stores");
-        requestDB.addValueEventListener(new ValueEventListener() {
+        pendingDb = FirebaseDatabase.getInstance().getReference().child("Stores");
+        pendingDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> mStoreNames = new ArrayList<>();
@@ -89,7 +94,7 @@ public class ManageFragment extends Fragment implements RequestAdapter.OnNoteLis
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                snackbarMessage(getView().findViewById(android.R.id.content), databaseError.getMessage());
+
             }
         });
 
@@ -105,8 +110,8 @@ public class ManageFragment extends Fragment implements RequestAdapter.OnNoteLis
 
     private void initActiveStores()
     {
-        DatabaseReference requestDB = FirebaseDatabase.getInstance().getReference().child("Stores");
-        requestDB.addValueEventListener(new ValueEventListener() {
+        storeDb = FirebaseDatabase.getInstance().getReference().child("Stores");
+        storeDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> ids = new ArrayList<>();
@@ -132,21 +137,24 @@ public class ManageFragment extends Fragment implements RequestAdapter.OnNoteLis
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                snackbarMessage(getView().findViewById(android.R.id.content), databaseError.getMessage());
+
             }
         });
     }
 
     public void onCardClick(final int position)
     {
-        DatabaseReference requestDB = FirebaseDatabase.getInstance().getReference().child("Stores");
-        requestDB.addListenerForSingleValueEvent(new ValueEventListener() {
+        cardDb = FirebaseDatabase.getInstance().getReference().child("Stores");
+        cardDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> mRequestID = new ArrayList<>();
                 for(DataSnapshot data : dataSnapshot.getChildren())
                 {
-                    mRequestID.add(data.getKey());
+                    if(data.child("status").getValue().equals("accepted") && data.child("uid").getValue().equals(fbAuth.getUid()))
+                    {
+                        mRequestID.add(data.getKey());
+                    }
                 }
                 final String id = mRequestID.get(position);
 
@@ -165,14 +173,17 @@ public class ManageFragment extends Fragment implements RequestAdapter.OnNoteLis
 
     @Override
     public void onNoteClick(final int position, String id) {
-        DatabaseReference requestDB = FirebaseDatabase.getInstance().getReference().child("Stores");
-        requestDB.addListenerForSingleValueEvent(new ValueEventListener() {
+        noteDb = FirebaseDatabase.getInstance().getReference().child("Stores");
+        noteDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> mRequestID = new ArrayList<>();
                 for(DataSnapshot data : dataSnapshot.getChildren())
                 {
-                    mRequestID.add(data.getKey());
+                    if(data.child("status").getValue().equals("pending") && data.child("uid").getValue().equals(fbAuth.getUid()))
+                    {
+                        mRequestID.add(data.getKey());
+                    }
                 }
                 final String id = mRequestID.get(position);
                 AlertDialog.Builder remove = new AlertDialog.Builder(getContext());
@@ -200,5 +211,11 @@ public class ManageFragment extends Fragment implements RequestAdapter.OnNoteLis
 
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
     }
 }
