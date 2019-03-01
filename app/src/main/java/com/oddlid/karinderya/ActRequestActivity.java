@@ -166,7 +166,7 @@ public class ActRequestActivity extends AppCompatActivity {
                             ddRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    int count = dataSnapshot.child("store_count").getValue(int.class) + 1;
+                                    int count = dataSnapshot.child("store_co    unt").getValue(int.class) + 1;
                                     ddRef.child("store_count").setValue(count).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {

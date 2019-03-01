@@ -62,6 +62,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/smallButtonHeight"
         android:background="@drawable/transparent_btn"
+        android:onClick="cancelUploadImage"
         android:text="cancel change"
         android:textSize="@dimen/smallFont"
         android:visibility="gone"

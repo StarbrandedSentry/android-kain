@@ -15,7 +15,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/f_manage_activeRecycler"
             android:layout_width="0dp"
-            android:layout_height="200dp"
+            android:layout_height="400dp"
             android:layout_marginBottom="248dp"
             android:background="@drawable/border_btn"
             android:padding="@dimen/materialPadding"

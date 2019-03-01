@@ -73,9 +73,9 @@ public class ManageFragment extends Fragment implements RequestAdapter.OnNoteLis
                 {
                     if(data.child("status").getValue().equals("pending") && data.child("uid").getValue().equals(fbAuth.getUid()))
                     {
-                        mDateMade.add(data.child("date_made").getValue(String.class));
-                        mStoreNames.add(data.child("name").getValue(String.class));
-                        mRequestID.add(data.getKey());
+                        mDateMade.add(data.child("street_address").getValue(String.class) + ", " + data.child("city").getValue(String.class));
+                        mStoreNames.add(data.child("date_made").getValue(String.class));
+                        mRequestID.add(data.child("name").getValue(String.class));
                     }
                 }
                 /*for(DataSnapshot data : dataSnapshot.getChildren())
@@ -123,7 +123,7 @@ public class ManageFragment extends Fragment implements RequestAdapter.OnNoteLis
                     {
                         locations.add(data.child("street_address").getValue(String.class) + ", " + data.child("city").getValue(String.class));
                         names.add(data.child("name").getValue(String.class));
-                        ids.add(data.getKey());
+                        ids.add(data.child("date_made").getValue(String.class));
                     }
                 }
                 recyclerView = getView().findViewById(R.id.f_manage_activeRecycler);

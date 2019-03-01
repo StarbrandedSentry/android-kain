@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -48,8 +49,16 @@ public class SignupActivity extends AppCompatActivity {
         signupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                if(editEmail.getText().toString().matches("") || editPassword.getText().toString().matches("")
+                    || editConfirmPassword.getText().toString().matches("") || editName.getText().toString().matches(""))
+                {
+                    Toast.makeText(getApplicationContext(), "Fill necessary information!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 String password = editPassword.getText().toString();
                 String cPassword = editConfirmPassword.getText().toString();
+
                 if(password.equals(cPassword))
                 {
                     fbAuth.createUserWithEmailAndPassword(editEmail.getText().toString(), editPassword.getText().toString())

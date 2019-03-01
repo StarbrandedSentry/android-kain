@@ -23,7 +23,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -48,18 +50,24 @@ public class StorePromosFragment extends Fragment implements PromoAdapter.OnMenu
     String promoFrom, promoTo;
     String period;
     int promoTime, promoType;
+    DatabaseReference promoDB;
+    Dialog singleInput;
 
     private RecyclerView promoRecycler;
     private RecyclerView.Adapter promoAdapter;
     private RecyclerView.LayoutManager promoLayout;
+    ValueEventListener promoListener;
 
     FirebaseAuth fbAuth;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_store_promos, container, false);
+        final View view = inflater.inflate(R.layout.fragment_store_promos, container, false);
         oldBundle = getArguments();
         fbAuth = FirebaseAuth.getInstance();
+        promoMenu = new Dialog(getContext());
+        promoMenu.setContentView(R.layout.dialog_add_promo);
+        //set up
 
         addPromo = view.findViewById(R.id.f_store_promo_add_promo);
         addPromo.setOnClickListener(new View.OnClickListener() {
@@ -69,18 +77,10 @@ public class StorePromosFragment extends Fragment implements PromoAdapter.OnMenu
             }
         });
 
-        initPromo(view);
-        setDetails(view);
-
-        return view;
-    }
-
-    private void initPromo(final View view) {
-        final String id = oldBundle.getString("id");
-        DatabaseReference promoDB = FirebaseDatabase.getInstance().getReference("Promos");
-        promoDB.addValueEventListener(new ValueEventListener() {
+        promoListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                final String id = oldBundle.getString("id");
                 ArrayList<String> store_ids = new ArrayList<>();
                 ArrayList<String> stores = new ArrayList<>();
                 ArrayList<String> names = new ArrayList<>();
@@ -122,7 +122,17 @@ public class StorePromosFragment extends Fragment implements PromoAdapter.OnMenu
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        };
+
+        initPromo(view);
+        setDetails(view);
+
+        return view;
+    }
+
+    private void initPromo(final View view) {
+        promoDB = FirebaseDatabase.getInstance().getReference("Promos");
+        promoDB.addValueEventListener(promoListener);
     }
 
     @Override
@@ -132,6 +142,17 @@ public class StorePromosFragment extends Fragment implements PromoAdapter.OnMenu
 
     @Override
     public void onRemove(int position, ArrayList<String> promo_ids) {
+        promoDB = FirebaseDatabase.getInstance().getReference("Promos").child(promo_ids.get(position));
+        promoDB.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(getContext(), "Promo removed!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onChangeName(int position, ArrayList<String> promo_ids) {
 
     }
 
@@ -146,8 +167,6 @@ public class StorePromosFragment extends Fragment implements PromoAdapter.OnMenu
     private void addPromoOnClick(View view)
     {
         final String id = oldBundle.getString("id");
-        promoMenu = new Dialog(getActivity());
-        promoMenu.setContentView(R.layout.dialog_add_promo);
 
         closeDialog = promoMenu.findViewById(R.id.d_addPromo_close_btn);
         closeDialog.setOnClickListener(new View.OnClickListener() {
@@ -176,7 +195,7 @@ public class StorePromosFragment extends Fragment implements PromoAdapter.OnMenu
                 Bundle promo = new Bundle();
                 promo.putInt("picker_id", 1);
                 DialogFragment timePicker = new PromoTimeFragment();
-                timePicker.show(getFragmentManager(), "Promo Time");
+                timePicker.show(getActivity().getSupportFragmentManager(), "Promo Time");
             }
         });
         TextView timeTo = promoMenu.findViewById(R.id.d_addPromo_to);
@@ -185,9 +204,9 @@ public class StorePromosFragment extends Fragment implements PromoAdapter.OnMenu
             public void onClick(View v) {
                 promoTime = 2;
                 Bundle promo = new Bundle();
-                promo.putInt("picker_id", 1);
+                promo.putInt("picker_id", 2);
                 DialogFragment timePicker = new PromoTimeFragment();
-                timePicker.show(getFragmentManager(), "Promo Time");
+                timePicker.show(getActivity().getSupportFragmentManager(), "Promo Time");
             }
         });
 
@@ -241,28 +260,6 @@ public class StorePromosFragment extends Fragment implements PromoAdapter.OnMenu
         promoMenu.show();
     }
 
-    @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        period = "am";
-        if (hourOfDay >= 13) {
-            hourOfDay -= 12;
-            period = "pm";
-        }
-
-        switch (promoTime) {
-            case 1: //time from
-                promoFrom = hourOfDay + ":" + String.format("%02d", minute);
-                TextView timeFrom = promoMenu.findViewById(R.id.d_addPromo_from);
-                timeFrom.setText(promoFrom + " " + period);
-                break;
-            case 2: //time to
-                promoTo = hourOfDay + ":" + String.format("%02d", minute);
-                TextView timeTo = promoMenu.findViewById(R.id.d_addPromo_to);
-                timeTo.setText(promoTo + " " + period);
-                break;
-        }
-    }
-
     protected String random() {
         String SALTCHARS = "1234567890qwerty";
         StringBuilder salt = new StringBuilder();
@@ -290,6 +287,29 @@ public class StorePromosFragment extends Fragment implements PromoAdapter.OnMenu
                     fromTitle.setVisibility(View.VISIBLE);
                     to.setVisibility(View.VISIBLE);
                     from.setVisibility(View.VISIBLE);
+
+                    /*from = promoMenu.findViewById(R.id.d_addPromo_from);
+                    from.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            promoTime = 1;
+                            Bundle promo = new Bundle();
+                            promo.putInt("picker_id", 1);
+                            DialogFragment timePicker = new PromoTimeFragment();
+                            timePicker.show(getFragmentManager(), "Promo Time");
+                        }
+                    });
+                    to = promoMenu.findViewById(R.id.d_addPromo_to);
+                    to.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            promoTime = 2;
+                            Bundle promo = new Bundle();
+                            promo.putInt("picker_id", 2);
+                            DialogFragment timePicker = new PromoTimeFragment();
+                            timePicker.show(getFragmentManager(), "Promo Time");
+                        }
+                    });*/
                 } else if (position == 0) {
                     TextView toTitle = promoMenu.findViewById(R.id.d_addPromo_to_title);
                     TextView fromTitle = promoMenu.findViewById(R.id.d_addPromo_from_title);
@@ -311,5 +331,36 @@ public class StorePromosFragment extends Fragment implements PromoAdapter.OnMenu
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        promoDB.removeEventListener(promoListener);
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        period = "am";
+        if (hourOfDay >= 13) {
+            hourOfDay -= 12;
+            period = "pm";
+        }
+
+        Toast.makeText(getContext(), "IT GOT HERE", Toast.LENGTH_SHORT).show();
+
+        switch (promoTime) {
+            case 1: //time from
+                promoFrom = hourOfDay + ":" + String.format("%02d", minute);
+                TextView timeFrom = promoMenu.findViewById(R.id.d_addPromo_from);
+                timeFrom.setText(promoFrom + " " + period);
+                break;
+            case 2: //time to
+                promoTo = hourOfDay + ":" + String.format("%02d", minute);
+                TextView timeTo = promoMenu.findViewById(R.id.d_addPromo_to);
+                timeTo.setText(promoTo + " " + period);
+                break;
+        }
     }
 }

@@ -159,6 +159,7 @@ public class AddItemActivity extends AppCompatActivity {
 
                 Picasso.get()
                         .load(imageUri)
+                        .fit().centerCrop()
                         .into(image);
             }
         }

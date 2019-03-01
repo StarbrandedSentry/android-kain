@@ -1,17 +1,22 @@
 package com.oddlid.karinderya.fragments;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,10 +49,12 @@ public class StoreDetailsFragment extends Fragment {
     TextView geoPointTitle, geoPoint;
     String latitude, longitude;
     GeoPoint geoPointVal;
+    Dialog singleInput, doubleInput;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     FirebaseUser fbAuth;
     DatabaseReference storeDb;
+    ValueEventListener detailListener;
 
     @Nullable
     @Override
@@ -72,14 +79,10 @@ public class StoreDetailsFragment extends Fragment {
         setGeoPoint = view.findViewById(R.id.f_store_detail_set_geopoint);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
-        //work
-        setEnabled(view);
-        initDetails(view);
-
         //setting on clicks
         submitRating.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 storeDb.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -125,6 +128,8 @@ public class StoreDetailsFragment extends Fragment {
                                 });
                             }
                         });
+
+                        //initDetails(v);
                     }
 
                     @Override
@@ -136,19 +141,7 @@ public class StoreDetailsFragment extends Fragment {
             }
         });
 
-        setGeoPoint.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getLastKnownLocation();
-
-            }
-        });
-
-        return view;
-    }
-
-    private void initDetails(final View view) {
-        storeDb.addListenerForSingleValueEvent(new ValueEventListener() {
+        detailListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Request request = dataSnapshot.getValue(Request.class);
@@ -175,7 +168,7 @@ public class StoreDetailsFragment extends Fragment {
                 }
 
                 if(dataSnapshot.child("uid").getValue(String.class).equals(fbAuth.getUid())
-                    && dataSnapshot.child("geo_location").exists())
+                        && dataSnapshot.child("geo_location").exists())
                 {
                     geoPoint.setText(dataSnapshot.child("geo_location").child("latitude").getValue().toString() + ", " + dataSnapshot.child("geo_location").child("longitude").getValue().toString());
                 }
@@ -185,10 +178,28 @@ public class StoreDetailsFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
+        };
+
+        //work
+        setEnabled(view);
+        initDetails(view);
+
+        setGeoPoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getLastKnownLocation();
+
+            }
         });
+
+        return view;
     }
 
-    private void setEnabled(View view) {
+    private void initDetails(final View view) {
+        storeDb.addValueEventListener(detailListener);
+    }
+
+    private void setEnabled(final View view) {
         storeDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -200,6 +211,93 @@ public class StoreDetailsFragment extends Fragment {
                     setGeoPoint.setVisibility(View.VISIBLE);
                     geoPoint.setVisibility(View.VISIBLE);
                     geoPointTitle.setVisibility(View.VISIBLE);
+
+                    singleInput = new Dialog(getActivity());
+                    singleInput.setContentView(R.layout.dialog_single_input);
+                    doubleInput = new Dialog(getActivity());
+                    doubleInput.setContentView(R.layout.dialog_double_input);
+
+                    //final DatabaseReference renameDb = FirebaseDatabase.getInstance().getReference("Stores").child(oldBundle.getString("id"));
+
+                    TextView nameTitle = view.findViewById(R.id.f_store_detail_name_title);
+                    nameTitle.setText("Tap to Change Name");
+                    nameTitle.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //title
+                            TextView information = singleInput.findViewById(R.id.d_single_input_text);
+                            information.setText("Change Karinderya Name");
+                            //edit texts
+                            final EditText input = singleInput.findViewById(R.id.d_single_input_edit);
+                            input.setText("");
+                            input.setHint("New Name");
+                            Button confirm = singleInput.findViewById(R.id.d_single_input_confirm);
+                            confirm.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    storeDb.child("name").setValue(input.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            singleInput.dismiss();
+                                        }
+                                    });
+                                }
+                            });
+
+                            singleInput.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            singleInput.show();
+                        }
+                    });
+
+                    TextView contactTitle = view.findViewById(R.id.f_store_detail_contact_number_title);
+                    contactTitle.setText("Tap to Change Contact Number");
+                    contactTitle.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //title
+                            TextView information = singleInput.findViewById(R.id.d_single_input_text);
+                            information.setText("Change Contact Number");
+                            //edit texts
+                            final EditText input = singleInput.findViewById(R.id.d_single_input_edit);
+                            input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                            input.setText("");
+                            input.setHint("New Contact Number");
+                            Button confirm = singleInput.findViewById(R.id.d_single_input_confirm);
+                            confirm.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    storeDb.child("contact_number").setValue(input.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            singleInput.dismiss();
+                                        }
+                                    });
+                                }
+                            });
+                            singleInput.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            singleInput.show();
+                        }
+                    });
+
+                    Button close = singleInput.findViewById(R.id.d_single_input_cancel);
+                    close.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            singleInput.dismiss();
+                        }
+                    });
+                    Button close2 = doubleInput.findViewById(R.id.d_double_input_cancel);
+                    close2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            doubleInput.dismiss();
+                        }
+                    });
+
+
+                    //logic for each changer
+                    /*singleInput.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    singleInput.show();*/
                 }
 
                 //TRY
@@ -238,6 +336,13 @@ public class StoreDetailsFragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        storeDb.removeEventListener(detailListener);
     }
 
 }

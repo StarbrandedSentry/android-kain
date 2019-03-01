@@ -49,6 +49,10 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
     implementation 'com.google.maps.android:android-maps-utils:0.5+'
     implementation 'com.android.support:cardview-v7:28.0.0'
+
+    //maps services
+    implementation 'com.google.maps:google-maps-services:0.9.1'
+    implementation 'org.slf4j:slf4j-simple:1.7.25'
 }
 
 apply plugin: 'com.google.gms.google-services'

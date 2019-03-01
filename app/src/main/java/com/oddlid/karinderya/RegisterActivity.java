@@ -174,12 +174,6 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
     //register button logic
     public void registerBtn(final View view)
     {
-
-
-        if(bannerUri == null || pdfUri == null || idUri == null)
-        {
-            return;
-        }
         pb = findViewById(R.id.a_register_pb);
         pb.setVisibility(View.VISIBLE);
         registerBtn = (Button) findViewById(R.id.registerBtn);
@@ -191,6 +185,15 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
         editCity = findViewById(R.id.a_register_city);
         editContactNumber = findViewById(R.id.a_register_contact_number);
         editCapacity = findViewById(R.id.a_register_capacity);
+
+        if(bannerUri == null || pdfUri == null || idUri == null
+            || editName.getText().toString().matches("") || editLocation.getText().toString().matches("")
+            || editCity.getText().toString().matches(""))
+        {
+            Toast.makeText(getApplicationContext(), "Fill up necessary information!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if(time.equals("24 hours"))
         {
             request = new Request(editName.getText().toString(), uid, getCurrentDate(), editLocation.getText().toString(), editCity.getText().toString()
@@ -203,7 +206,7 @@ public class RegisterActivity extends AppCompatActivity implements DatePickerDia
         }
 
         final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Stores");
-        dbRef.addValueEventListener(new ValueEventListener() {
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 while(!flag)

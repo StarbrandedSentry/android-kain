@@ -5,19 +5,29 @@ import com.google.maps.android.clustering.ClusterItem;
 
 public class ClusterMarker implements ClusterItem {
     private LatLng position;
-    private int iconPicture;
+    private String iconPicture;
     private String snippet;
     private String title;
+    private String iden;
 
-    public ClusterMarker(LatLng position, int iconPicture, String snippet, String title) {
+    public ClusterMarker(LatLng position, String iconPicture, String snippet, String title, String id) {
         this.position = position;
         this.iconPicture = iconPicture;
         this.snippet = snippet;
         this.title = title;
+        this.iden = id;
     }
 
     public ClusterMarker()
     {}
+
+    public String getIden() {
+        return iden;
+    }
+
+    public void setIden(String iden) {
+        this.iden = iden;
+    }
 
     @Override
     public LatLng getPosition() {
@@ -28,11 +38,11 @@ public class ClusterMarker implements ClusterItem {
         this.position = position;
     }
 
-    public int getIconPicture() {
+    public String getIconPicture() {
         return iconPicture;
     }
 
-    public void setIconPicture(int iconPicture) {
+    public void setIconPicture(String iconPicture) {
         this.iconPicture = iconPicture;
     }
 

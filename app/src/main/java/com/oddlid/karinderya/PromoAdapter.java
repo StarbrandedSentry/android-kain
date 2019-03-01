@@ -81,6 +81,9 @@ public class PromoAdapter extends RecyclerView.Adapter<PromoAdapter.PromoHolder>
                 case 1:
                     onMenuListener.onRemove(getAdapterPosition(), promo_ids);
                     break;
+                case 2:
+                    onMenuListener.onChangeName(getAdapterPosition(), promo_ids);
+                    break;
             }
 
             return false;
@@ -93,8 +96,10 @@ public class PromoAdapter extends RecyclerView.Adapter<PromoAdapter.PromoHolder>
                 menu.setHeaderTitle("Select action");
 
                 MenuItem remove = menu.add(Menu.NONE, 1, 1, "Remove promo");
+                MenuItem nameChange = menu.add(Menu.NONE, 2, 2, "Change Promo Name");
 
                 remove.setOnMenuItemClickListener(this);
+                nameChange.setOnMenuItemClickListener(this);
             }
         }
 
@@ -109,5 +114,7 @@ public class PromoAdapter extends RecyclerView.Adapter<PromoAdapter.PromoHolder>
         void onMenuClick(int position, String id);
 
         void onRemove(int position, ArrayList<String> promo_ids);
+
+        void onChangeName(int position, ArrayList<String> promo_ids);
     }
 }

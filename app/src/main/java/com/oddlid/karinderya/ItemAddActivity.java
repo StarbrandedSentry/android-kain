@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 
 public class ItemAddActivity extends AppCompatActivity implements ItemAddAdapter.OnMenuListener{
     Intent oldIntent;
+    DatabaseReference menuDb;
+    ValueEventListener menuListener;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter recyclerAdapter;
@@ -31,14 +34,9 @@ public class ItemAddActivity extends AppCompatActivity implements ItemAddAdapter
         setContentView(R.layout.activity_item_add);
         oldIntent = getIntent();
         storeDb = FirebaseDatabase.getInstance().getReference("Stores");
+        menuDb = storeDb.child(oldIntent.getStringExtra("id")).child("menu");
 
-        initItems();
-    }
-
-    private void initItems()
-    {
-        DatabaseReference menuDb = storeDb.child(oldIntent.getStringExtra("id")).child("menu");
-        menuDb.addListenerForSingleValueEvent(new ValueEventListener() {
+        menuListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> ids = new ArrayList<>();
@@ -68,7 +66,14 @@ public class ItemAddActivity extends AppCompatActivity implements ItemAddAdapter
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        };
+
+        initItems();
+    }
+
+    private void initItems()
+    {
+        menuDb.addValueEventListener(menuListener);
         /*menuDb.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -132,4 +137,50 @@ public class ItemAddActivity extends AppCompatActivity implements ItemAddAdapter
         //initItems();
     }
 
+    public void setAllAvailable(View view)
+    {
+        menuDb.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //int menuItems = 0;
+                for (DataSnapshot data : dataSnapshot.getChildren())
+                {
+                    data.child("availability").getRef().setValue("available");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void setAllUnavailable(View view)
+    {
+        menuDb.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //int menuItems = 0;
+                for (DataSnapshot data : dataSnapshot.getChildren())
+                {
+                    data.child("availability").getRef().setValue("unavailable");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        menuDb.removeEventListener(menuListener);
+    }
 }

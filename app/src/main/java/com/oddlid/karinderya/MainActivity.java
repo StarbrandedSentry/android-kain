@@ -60,6 +60,12 @@ public class MainActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                if(editEmail.getText().toString().matches("") || editPassword.getText().toString().matches(""))
+                {
+                    Toast.makeText(getApplicationContext(), "Fill necessary information!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 loginBtn.setClickable(false);
                 fbAuth = FirebaseAuth.getInstance();
                 fbAuth.signInWithEmailAndPassword(editEmail.getText().toString(), editPassword.getText().toString())

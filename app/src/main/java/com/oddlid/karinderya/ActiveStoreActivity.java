@@ -467,6 +467,11 @@ public class ActiveStoreActivity extends AppCompatActivity implements AvailMenuA
         promoDB.removeValue();
     }
 
+    @Override
+    public void onChangeName(int position, ArrayList<String> promo_ids) {
+
+    }
+
 
     //Override
     public void onUnavailableClick(int position, String id) {
@@ -601,6 +606,25 @@ public class ActiveStoreActivity extends AppCompatActivity implements AvailMenuA
                 });
             }
         });
+    }
+
+    public void cancelUploadImage(View view)
+    {
+        /*DatabaseReference storeDB = FirebaseDatabase.getInstance().getReference("Stores").child(id);
+        storeDB.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });*/
+
+        initBanner();
+        imageUri = null;
     }
 
     //setting up tabbing system

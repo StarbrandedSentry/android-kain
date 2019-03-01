@@ -28,7 +28,8 @@ public class PromosFragment extends Fragment implements PromoAdapter.OnMenuListe
     private RecyclerView.Adapter recyclerAdapter, promoAdapter;
     private RecyclerView.LayoutManager layoutManager, promoLayout;
 
-
+    ValueEventListener promoListener;
+    DatabaseReference promoDB;
     public PromosFragment() {
         // Required empty public constructor
     }
@@ -46,8 +47,8 @@ public class PromosFragment extends Fragment implements PromoAdapter.OnMenuListe
     private void initPromo()
     {
         final String id = "";
-        DatabaseReference promoDB = FirebaseDatabase.getInstance().getReference("Promos");
-        promoDB.addValueEventListener(new ValueEventListener() {
+
+        promoListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> store_ids = new ArrayList<>();
@@ -90,7 +91,10 @@ public class PromosFragment extends Fragment implements PromoAdapter.OnMenuListe
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        };
+
+        promoDB = FirebaseDatabase.getInstance().getReference("Promos");
+        promoDB.addValueEventListener(promoListener);
     }
 
 
@@ -105,5 +109,17 @@ public class PromosFragment extends Fragment implements PromoAdapter.OnMenuListe
     @Override
     public void onRemove(int position, ArrayList<String> promo_ids) {
 
+    }
+
+    @Override
+    public void onChangeName(int position, ArrayList<String> promo_ids) {
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        promoDB.removeEventListener(promoListener);
     }
 }

@@ -29,6 +29,9 @@ public class HomeFragment extends Fragment implements HomeAdapter.OnCardListener
     private RecyclerView.Adapter recyclerAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
+    ValueEventListener storeListener;
+    DatabaseReference storeRef;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -37,16 +40,8 @@ public class HomeFragment extends Fragment implements HomeAdapter.OnCardListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        initStores();
-
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
-    }
-
-    private void initStores()
-    {
-        DatabaseReference storeRef = FirebaseDatabase.getInstance().getReference().child("Stores");
-        storeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        storeRef = FirebaseDatabase.getInstance().getReference().child("Stores");
+        storeListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> names = new ArrayList<>();
@@ -83,7 +78,17 @@ public class HomeFragment extends Fragment implements HomeAdapter.OnCardListener
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        };
+
+        initStores();
+
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_home, container, false);
+    }
+
+    private void initStores()
+    {
+        storeRef.addValueEventListener(storeListener);
     }
 
     public void onCardClick(final int position) {
@@ -113,5 +118,12 @@ public class HomeFragment extends Fragment implements HomeAdapter.OnCardListener
 
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        storeRef.removeEventListener(storeListener);
     }
 }
